@@ -2,175 +2,82 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMI计算器</title>
+    <title>儿科疾病分类导航系统</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .calculator {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #34495e;
-            font-weight: 500;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="number"]:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 1rem;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .result {
-            margin-top: 1.5rem;
-            padding: 1.2rem;
-            border-radius: 8px;
-            text-align: center;
-            display: none;
-        }
-
-        .bmi-value {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .status {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        /* 健康状态颜色 */
-        .underweight { color: #e67e22; background: #fdf2e9; }
-        .normal { color: #27ae60; background: #e8f6ef; }
-        .overweight { color: #f1c40f; background: #fcf3cf; }
-        .obese { color: #e74c3c; background: #fadbd8; }
-
-        .reference {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 1rem;
-        }
+        body {font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px}
+        .category {background: #f5f5f5; padding: 15px; margin: 15px 0; border-radius: 8px}
+        h2 {color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px}
+        ul {list-style: none; padding-left: 20px}
+        li {margin: 8px 0}
+        a {color: #3498db; text-decoration: none}
+        a:hover {text-decoration: underline}
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <h1>BMI 健康计算器</h1>
-        <div class="input-group">
-            <label for="height">身高 (cm)</label>
-            <input type="number" id="height" placeholder="170" step="0.1" min="50" max="250">
-        </div>
-        <div class="input-group">
-            <label for="weight">体重 (kg)</label>
-            <input type="number" id="weight" placeholder="65" step="0.1" min="20" max="300">
-        </div>
-        <button onclick="calculateBMI()">计算 BMI</button>
-        
-        <div class="result" id="result">
-            <div class="bmi-value" id="bmiValue"></div>
-            <div class="status" id="bmiStatus"></div>
-            <div class="reference">
-                <p>BMI 参考范围：</p>
-                <p>偏瘦：＜18.5[7,8](@ref)</p>
-                <p>正常：18.5 - 24.9[8](@ref)</p>
-                <p>超重：25 - 29.9[7](@ref)</p>
-                <p>肥胖：≥30[9](@ref)</p>
-            </div>
-        </div>
+    <h1>儿科疾病分类导航系统</h1>
+
+    <!-- 呼吸系统疾病 -->
+    <div class="category">
+        <h2>呼吸系统疾病</h2>
+        <ul>
+            <li><a href="/diseases/respiratory/pneumonia">肺炎</a></li>
+            <li><a href="/diseases/respiratory/asthma">支气管哮喘</a></li>
+            <li><a href="/diseases/respiratory/bronchitis">支气管炎</a></li>
+            <li><a href="/diseases/respiratory/croup">急性喉气管支气管炎</a></li>
+        </ul>
     </div>
 
-    <script>
-        function calculateBMI() {
-            // 获取输入值
-            const height = parseFloat(document.getElementById('height').value);
-            const weight = parseFloat(document.getElementById('weight').value);
-            const resultDiv = document.getElementById('result');
-            
-            // 输入验证
-            if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
-                alert('请输入有效的身高和体重数值[5](@ref)');
-                return;
-            }
+    <!-- 消化系统疾病 -->
+    <div class="category">
+        <h2>消化系统疾病</h2>
+        <ul>
+            <li><a href="/diseases/digestive/gastroenteritis">急性胃肠炎</a></li>
+            <li><a href="/diseases/digestive/diarrhea">小儿腹泻病</a></li>
+            <li><a href="/diseases/digestive/constipation">功能性便秘</a></li>
+            <li><a href="/diseases/digestive/gerd">胃食管反流病</a></li>
+        </ul>
+    </div>
 
-            // 单位转换（厘米转米）
-            const heightInMeters = height / 100;
-            
-            // 计算BMI（体重kg ÷ 身高m²）
-            const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
-            
-            // 显示结果区域
-            resultDiv.style.display = 'block';
-            
-            // 更新数值显示
-            document.getElementById('bmiValue').textContent = bmi;
-            
-            // 判断健康状态
-            const statusElement = document.getElementById('bmiStatus');
-            resultDiv.className = 'result'; // 重置样式
-            if (bmi < 18.5) {
-                statusElement.textContent = '体重过轻';
-                resultDiv.classList.add('underweight');
-            } else if (bmi >= 18.5 && bmi <= 24.9) {
-                statusElement.textContent = '健康体重';
-                resultDiv.classList.add('normal');
-            } else if (bmi >= 25 && bmi <= 29.9) {
-                statusElement.textContent = '超重';
-                resultDiv.classList.add('overweight');
-            } else {
-                statusElement.textContent = '肥胖';
-                resultDiv.classList.add('obese');
-            }
-        }
-    </script>
+    <!-- 神经系统疾病 -->
+    <div class="category">
+        <h2>神经系统疾病</h2>
+        <ul>
+            <li><a href="/diseases/neurological/epilepsy">癫痫</a></li>
+            <li><a href="/diseases/neurological/meningitis">化脓性脑膜炎</a></li>
+            <li><a href="/diseases/neurological/encephalitis">病毒性脑炎</a></li>
+            <li><a href="/diseases/neurological/cerebralpalsy">脑性瘫痪</a></li>
+        </ul>
+    </div>
+
+    <!-- 新生儿疾病 -->
+    <div class="category">
+        <h2>新生儿疾病</h2>
+        <ul>
+            <li><a href="/diseases/neonatal/jaundice">新生儿黄疸</a></li>
+            <li><a href="/diseases/neonatal/pneumonia">新生儿肺炎</a></li>
+            <li><a href="/diseases/neonatal/sepsis">新生儿败血症</a></li>
+            <li><a href="/diseases/neonatal/hypoxia">新生儿缺氧缺血性脑病</a></li>
+        </ul>
+    </div>
+
+    <!-- 免疫系统疾病 -->
+    <div class="category">
+        <h2>免疫系统疾病</h2>
+        <ul>
+            <li><a href="/diseases/immune/kawasaki">川崎病</a></li>
+            <li><a href="/diseases/immune/lupus">系统性红斑狼疮</a></li>
+            <li><a href="/diseases/immune/arthritis">幼年特发性关节炎</a></li>
+        </ul>
+    </div>
+
+    <!-- 遗传代谢疾病 -->
+    <div class="category">
+        <h2>遗传代谢疾病</h2>
+        <ul>
+            <li><a href="/diseases/metabolic/pku">苯丙酮尿症</a></li>
+            <li><a href="/diseases/metabolic/glycogen">糖原累积病</a></li>
+            <li><a href="/diseases/metabolic/mucopolysaccharidosis">粘多糖病</a></li>
+        </ul>
+    </div>
 </body>
 </html>
