@@ -3,110 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新生儿黄疸护理指南</title>
+    <title>儿科常用知识库（家庭版）</title>
     <style>
         body {
-            font-family: -apple-system, Segoe UI, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding: 15px;
-            max-width: 800px;
-            margin: 0 auto;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.65;
+            color: #1f2937;
+            margin: 0;
+            background: #f8fafc;
         }
-        h1 { color: #2c7ae0; }
-        h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+        h1 {
+            color: #1d4ed8;
+            margin-bottom: 8px;
+        }
+        h2 {
+            color: #334155;
+            border-left: 4px solid #60a5fa;
+            padding-left: 10px;
+            margin-top: 28px;
+        }
+        .subtitle {
+            color: #475569;
+            margin-top: 0;
+        }
+        .grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-top: 12px;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.05);
+        }
+        .card h3 {
+            margin: 0 0 8px;
+            color: #1e40af;
+            font-size: 1.05rem;
+        }
+        .card p {
+            margin: 0 0 10px;
+            color: #334155;
+        }
+        .card a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .card a:hover { text-decoration: underline; }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
-            background: #f8fafc;
+            margin-top: 12px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
         }
         th, td {
-            border: 1px solid #cbd5e0;
-            padding: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
             text-align: left;
+            vertical-align: top;
         }
-        th { background: #ebf8ff; }
-        .warning { color: #c53030; }
-        .tip { color: #38a169; }
-        ul { padding-left: 25px; }
-        .icon { font-size: 1.2em; }
-        tr:nth-child(even) { background: #f7fafc; }
+        th { background: #eff6ff; }
+        .warning {
+            margin-top: 14px;
+            background: #fff7ed;
+            border-left: 4px solid #f97316;
+            padding: 12px;
+            color: #7c2d12;
+        }
+        ul { padding-left: 22px; }
+        footer {
+            margin-top: 24px;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
-    <h1>新生儿黄疸护理指南</h1>
-    
-    <h2>一、黄疸的成因与类型</h2>
-    <h3>1. 生理性黄疸（正常现象）</h3>
-    <ul>
-        <li><span class="icon">⏰</span> 出现时间：出生后2-3天</li>
-        <li><span class="icon">📈</span> 高峰期：第5-7天</li>
-        <li><span class="icon">✅</span> 特点：皮肤和眼白轻度黄染，宝宝精神好、吃奶正常</li>
-    </ul>
+<div class="container">
+    <h1>儿科常用知识库（家庭版）</h1>
+    <p class="subtitle">面向家长的高频问题速查：包含日常护理、紧急识别、喂养营养与就医提醒。</p>
 
-    <h3>2. 病理性黄疸（需及时就医）</h3>
-    <ul>
-        <li><span class="icon warning">⚠️</span> 危险信号：
-            <ul>
-                <li>出生24小时内出现黄疸</li>
-                <li>黄疸迅速加重</li>
-            </ul>
-        </li>
-    </ul>
+    <h2>一、常用专题入口</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>新生儿黄疸护理</h3>
+            <p>了解生理/病理性黄疸区别、家庭观察重点和复查时间。</p>
+            <a href="/med/index.html#jaundice">查看黄疸速查</a>
+        </div>
+        <div class="card">
+            <h3>呛奶急救与预防</h3>
+            <p>掌握黄金抢救步骤，降低窒息风险，纠正常见误区。</p>
+            <a href="/med/baby-choking/">进入专题</a>
+        </div>
+        <div class="card">
+            <h3>维生素D补充</h3>
+            <p>按月龄和喂养方式确定补充方案，避免不足或过量。</p>
+            <a href="/med/vd/">进入专题</a>
+        </div>
+        <div class="card">
+            <h3>过敏与IgG4认知</h3>
+            <p>认识检测适应证，避免把“食物不耐受”误当过敏。</p>
+            <a href="/allergy/igg4/">进入专题</a>
+        </div>
+    </div>
 
-    <h2>二、家庭护理5大关键措施</h2>
+    <h2>二、家庭高频问题速查</h2>
     <table>
         <tr>
-            <th>措施</th>
-            <th>具体方法</th>
+            <th>场景</th>
+            <th>家庭处理要点</th>
+            <th>何时就医</th>
         </tr>
         <tr>
-            <td>增加喂养频率</td>
-            <td>母乳喂养每天8-12次，配方奶每2-3小时一次</td>
+            <td>发热</td>
+            <td>补液、减少包裹，记录体温变化和精神状态。</td>
+            <td>3月龄以下体温≥38℃；反复高热或精神差、拒奶。</td>
         </tr>
         <tr>
-            <td>适度日光照射</td>
-            <td>上午9-10点隔着玻璃晒10-15分钟</td>
+            <td>咳嗽/鼻塞</td>
+            <td>保持空气湿润，分次喂养，生理盐水清理鼻腔。</td>
+            <td>呼吸急促、喘憋、口唇发紫、夜间明显加重。</td>
+        </tr>
+        <tr>
+            <td>呕吐/腹泻</td>
+            <td>少量多次补液，观察尿量和精神反应。</td>
+            <td>持续喷射性呕吐、血便、明显脱水（尿少/哭无泪）。</td>
+        </tr>
+        <tr>
+            <td>皮疹</td>
+            <td>避免抓挠和过度清洁，拍照记录分布及演变。</td>
+            <td>合并发热、黏膜受累、呼吸困难或皮疹迅速扩散。</td>
         </tr>
     </table>
 
-    <h3 class="warning">❌ 避免误区</h3>
-    <ul>
-        <li>喂葡萄糖水或白开水</li>
-        <li>用草药洗澡</li>
-    </ul>
-
-    <h2>三、何时需要就医？</h2>
+    <h2 id="jaundice">三、新生儿黄疸速查</h2>
     <table>
         <tr>
-            <th>宝宝小时龄</th>
-            <th>需光疗的胆红素值（mg/dL）</th>
+            <th>类型</th>
+            <th>常见时间</th>
+            <th>特点</th>
         </tr>
         <tr>
-            <td>≤24小时</td>
-            <td>≥8.0</td>
+            <td>生理性黄疸</td>
+            <td>出生后2-3天出现，5-7天达高峰</td>
+            <td>精神吃奶可，通常在2周内减轻</td>
         </tr>
         <tr>
-            <td>48小时</td>
-            <td>≥12.0</td>
+            <td>病理性黄疸</td>
+            <td>出生24小时内出现或进展很快</td>
+            <td>颜色深、嗜睡拒奶，需尽快就医评估</td>
         </tr>
     </table>
-
-    <h2>四、母乳性黄疸的特殊护理</h2>
     <ul>
-        <li><span class="tip">✅</span> 特点：黄疸持续4-12周</li>
-        <li><span class="tip">✅</span> 处理建议：无需停母乳</li>
-    </ul>
-
-    <h2>五、预防与复查</h2>
-    <ul>
-        <li>出生后尽早开奶</li>
-        <li>出院后3-5天复查胆红素</li>
+        <li>喂养频次建议：母乳 8-12 次/日，保证排便排尿通畅。</li>
+        <li>复查建议：出院后 3-5 天复查胆红素；早产儿或高危儿按医嘱提前复查。</li>
+        <li>避免误区：喂糖水/偏方、盲目停母乳、过度暴晒。</li>
     </ul>
 
     <div class="warning">
-        <p>重要提醒：本文仅供参考，具体治疗请遵医嘱！</p>
+        <strong>⚠️ 紧急信号：</strong>抽搐、反应差、持续高热、呼吸困难、青紫、持续拒奶等情况需立即就医或呼叫急救。
     </div>
+
+    <footer>
+        说明：本页面为家庭健康教育材料，不替代医生面对面诊疗。涉及用药、剂量或特殊疾病，请以儿科医生评估为准。
+    </footer>
+</div>
 </body>
 </html>
