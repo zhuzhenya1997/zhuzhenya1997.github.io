@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>家庭菜谱菜单生成器</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --border: #e5e7eb;
+      --ok: #047857;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #f3f6ff 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      margin-bottom: 16px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+
+    label { font-size: 14px; color: var(--muted); display: block; margin-bottom: 6px; }
+    select, input, button {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+
+    button.secondary {
+      background: #111827;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .dish {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .dish h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .kcal {
+      color: var(--ok);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+    }
+
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>家庭菜谱菜单生成器</h1>
+    <p class="subtitle">支持按类别筛选、关键词搜索、随机生成菜单，并估算每道菜与总热量（估算值）。</p>
+
+    <section class="card">
+      <div class="controls">
+        <div>
+          <label for="category">分类筛选</label>
+          <select id="category"></select>
+        </div>
+        <div>
+          <label for="keyword">关键词</label>
+          <input id="keyword" placeholder="例如：鸡、排骨、豆腐" />
+        </div>
+        <div>
+          <label for="menuSize">随机菜单道数</label>
+          <select id="menuSize">
+            <option value="3">3 道</option>
+            <option value="4" selected>4 道</option>
+            <option value="5">5 道</option>
+            <option value="6">6 道</option>
+          </select>
+        </div>
+        <div>
+          <button id="randomBtn">🎲 随机生成菜单</button>
+        </div>
+        <div>
+          <button id="resetBtn" class="secondary">重置筛选</button>
+        </div>
+      </div>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <section class="card">
+      <h3 style="margin:0 0 8px;">随机菜单</h3>
+      <div class="menu-grid" id="menuResult"></div>
+      <p class="muted" id="menuHint" style="margin-top:8px;">点击“随机生成菜单”查看推荐。</p>
+    </section>
+
+    <section class="card">
+      <h3 style="margin:0 0 8px;">菜谱列表</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>菜名</th>
+            <th>类别</th>
+            <th>热量估算</th>
+          </tr>
+        </thead>
+        <tbody id="dishTable"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const recipes = [
+      {"id": 1, "name": "黄焖鸡", "category": "荤菜"},
+      {"id": 2, "name": "番茄炒鸡蛋", "category": "素菜"},
+      {"id": 3, "name": "四川回锅肉", "category": "荤菜"},
+      {"id": 4, "name": "回锅肉", "category": "荤菜"},
+      {"id": 5, "name": "酒酿鸡蛋", "category": "特色小吃"},
+      {"id": 6, "name": "醪糟汤圆", "category": "主食"},
+      {"id": 7, "name": "酒酿(酒酿系列一)", "category": "特色小吃"},
+      {"id": 8, "name": "正宗的黄焖鸡米饭", "category": "荤菜"},
+      {"id": 9, "name": "西红柿炒鸡蛋", "category": "素菜"},
+      {"id": 10, "name": "干锅土豆片", "category": "素菜"},
+      {"id": 11, "name": "黄焖鸡 (小猪猪猪)", "category": "荤菜"},
+      {"id": 12, "name": "比饭店好吃很多倍的黄焖鸡", "category": "荤菜"},
+      {"id": 13, "name": "秒杀饭馆味道的【黄焖鸡米饭】", "category": "荤菜"},
+      {"id": 14, "name": "厨师长教你:“番茄炒鸡蛋”的家常做法", "category": "素菜"},
+      {"id": 15, "name": "香辣过瘾的孜然土豆火腿", "category": "荤菜"},
+      {"id": 16, "name": "简单粗暴包学会土味寿司", "category": "主食"},
+      {"id": 17, "name": "5分钟就能搞定的手抓饼早餐", "category": "主食"},
+      {"id": 18, "name": "好吃好做的早餐鸡蛋卷", "category": "主食"},
+      {"id": 19, "name": "何老师教你做麻辣烫", "category": "特色小吃"},
+      {"id": 20, "name": "可乐鸡翅", "category": "荤菜"},
+      {"id": 21, "name": "黄金菠萝蛋炒饭", "category": "主食"},
+      {"id": 22, "name": "干锅包菜", "category": "素菜"},
+      {"id": 23, "name": "青椒炒鸡蛋", "category": "素菜"},
+      {"id": 24, "name": "快手超下饭的青椒炒蛋", "category": "素菜"},
+      {"id": 25, "name": "洋葱炒土豆", "category": "素菜"},
+      {"id": 26, "name": "超走心的平底锅香煎豆腐", "category": "素菜"},
+      {"id": 27, "name": "香煎豆腐", "category": "素菜"},
+      {"id": 28, "name": "爆炒花菜", "category": "素菜"},
+      {"id": 29, "name": "荷叶饼", "category": "主食"},
+      {"id": 30, "name": "超级快速的紫薯酥", "category": "烘焙饮品"},
+      {"id": 31, "name": "童年的【奶奶牌]白菜卷饼", "category": "主食"},
+      {"id": 32, "name": "懒人苹果派/榴莲酥/红豆酥", "category": "烘焙饮品"},
+      {"id": 33, "name": "水烙馍", "category": "主食"},
+      {"id": 34, "name": "白菜卷饼", "category": "主食"},
+      {"id": 35, "name": "酱香饼", "category": "主食"},
+      {"id": 36, "name": "6寸,8寸,10寸戚风蛋糕配方", "category": "烘焙饮品"},
+      {"id": 37, "name": "苹果派", "category": "烘焙饮品"},
+      {"id": 38, "name": "锡纸金针菇", "category": "素菜"},
+      {"id": 39, "name": "芝士烤面包片", "category": "主食"},
+      {"id": 40, "name": "奥尔良烤翅", "category": "荤菜"},
+      {"id": 41, "name": "烤箱版奥尔良鸡", "category": "荤菜"},
+      {"id": 42, "name": "酸辣土豆丝", "category": "素菜"},
+      {"id": 43, "name": "蒸水蛋", "category": "素菜"},
+      {"id": 44, "name": "韩国辣酱炸鸡", "category": "荤菜"},
+      {"id": 45, "name": "虎皮青椒", "category": "素菜"},
+      {"id": 46, "name": "虎皮杭椒炒鸡蛋", "category": "素菜"},
+      {"id": 47, "name": "清炒藕片", "category": "素菜"},
+      {"id": 48, "name": "青椒炒蛋米饭杀手", "category": "素菜"},
+      {"id": 49, "name": "红烧肉", "category": "荤菜"},
+      {"id": 50, "name": "在家也能做的卤肉饭", "category": "主食"},
+      {"id": 51, "name": "红烧猪蹄", "category": "荤菜"},
+      {"id": 52, "name": "堂妈教你做部队火锅", "category": "特色小吃"},
+      {"id": 53, "name": "水煮肉片", "category": "荤菜"},
+      {"id": 54, "name": "不放肉超好吃的炒绿豆芽", "category": "素菜"},
+      {"id": 55, "name": "肉末茄子", "category": "素菜"},
+      {"id": 56, "name": "西兰花虾仁豆腐蒸蛋", "category": "荤菜"},
+      {"id": 57, "name": "番茄土豆肥牛汤", "category": "汤品"},
+      {"id": 58, "name": "福鼎肉片", "category": "荤菜"},
+      {"id": 59, "name": "干锅土豆片", "category": "素菜"},
+      {"id": 60, "name": "粉蒸肉", "category": "荤菜"},
+      {"id": 61, "name": "家庭版的手撕鸡", "category": "荤菜"},
+      {"id": 62, "name": "青椒炒豆腐干", "category": "素菜"},
+      {"id": 63, "name": "超下饭的辣子鸡丁", "category": "荤菜"},
+      {"id": 64, "name": "芹菜炒肉", "category": "荤菜"},
+      {"id": 65, "name": "酱香肉末烧茄子", "category": "素菜"},
+      {"id": 66, "name": "家常烧茄子", "category": "素菜"},
+      {"id": 67, "name": "蒜末烧茄子", "category": "素菜"},
+      {"id": 68, "name": "芹菜炒肉的新方法", "category": "荤菜"},
+      {"id": 69, "name": "豆瓣酱青椒炒肉", "category": "荤菜"},
+      {"id": 70, "name": "超级下饭菜青椒炒肉", "category": "荤菜"},
+      {"id": 71, "name": "韭黄炒鸡蛋", "category": "素菜"},
+      {"id": 72, "name": "土豆烧排骨", "category": "荤菜"},
+      {"id": 73, "name": "酸汤水饺", "category": "主食"},
+      {"id": 74, "name": "土豆炖排骨", "category": "荤菜"},
+      {"id": 75, "name": "三汁焖锅", "category": "荤菜"},
+      {"id": 76, "name": "三汁闷锅(黄记煌)", "category": "荤菜"},
+      {"id": 77, "name": "无敌好吃的香煎豆腐", "category": "素菜"},
+      {"id": 78, "name": "宫保鸡丁(家常版)", "category": "荤菜"},
+      {"id": 79, "name": "手撕包菜", "category": "素菜"},
+      {"id": 80, "name": "厨师长教你:“回锅肉”的正宗做法", "category": "荤菜"},
+      {"id": 81, "name": "鲜肉包子", "category": "主食"},
+      {"id": 82, "name": "老妈秘制卤牛肉", "category": "荤菜"},
+      {"id": 83, "name": "海南椰子鸡", "category": "荤菜"},
+      {"id": 84, "name": "韭菜花炒鸡蛋", "category": "素菜"},
+      {"id": 85, "name": "可乐鸡翅", "category": "荤菜"},
+      {"id": 86, "name": "炒青菜", "category": "素菜"},
+      {"id": 87, "name": "糖醋里脊", "category": "荤菜"},
+      {"id": 88, "name": "咖喱鱼蛋", "category": "特色小吃"},
+      {"id": 89, "name": "浓香咖喱鱼丸", "category": "特色小吃"},
+      {"id": 90, "name": "脆皮蛋黄鸡翅", "category": "荤菜"},
+      {"id": 91, "name": "爆炒鱿鱼", "category": "荤菜"},
+      {"id": 92, "name": "爆炒鱿鱼须", "category": "荤菜"},
+      {"id": 93, "name": "韭黄炒蛋", "category": "素菜"},
+      {"id": 94, "name": "通用包子皮做法", "category": "主食"},
+      {"id": 95, "name": "芹菜小炒牛肉", "category": "荤菜"},
+      {"id": 96, "name": "小炒牛肉", "category": "荤菜"},
+      {"id": 97, "name": "日式咖喱鸡肉饭", "category": "主食"},
+      {"id": 98, "name": "咖喱鸡肉", "category": "荤菜"},
+      {"id": 99, "name": "青椒炒鸡丁", "category": "荤菜"},
+      {"id": 100, "name": "重庆辣子鸡", "category": "荤菜"},
+      {"id": 101, "name": "小乌龟菠萝包", "category": "烘焙饮品"},
+      {"id": 102, "name": "港式菠萝包", "category": "烘焙饮品"},
+      {"id": 103, "name": "豆角排骨焖面", "category": "主食"},
+      {"id": 104, "name": "扬州狮子头", "category": "荤菜"},
+      {"id": 105, "name": "鲍鱼红烧肉", "category": "荤菜"},
+      {"id": 106, "name": "馒头成形记", "category": "主食"},
+      {"id": 107, "name": "红烧狮子头", "category": "荤菜"},
+      {"id": 108, "name": "烤小土豆", "category": "素菜"},
+      {"id": 109, "name": "家常小炒四季豆", "category": "素菜"},
+      {"id": 110, "name": "烤羊肉串", "category": "荤菜"},
+      {"id": 111, "name": "素炒饼", "category": "主食"},
+      {"id": 112, "name": "火腿西多士", "category": "主食"},
+      {"id": 113, "name": "咖喱鸡", "category": "荤菜"},
+      {"id": 114, "name": "早餐就爱三明治", "category": "主食"},
+      {"id": 115, "name": "鸭血豆腐煲", "category": "素菜"},
+      {"id": 116, "name": "寿司", "category": "主食"},
+      {"id": 117, "name": "高颜值海苔饭团", "category": "主食"},
+      {"id": 118, "name": "高颜值四喜寿司卷", "category": "主食"},
+      {"id": 119, "name": "辣白菜年糕泡面", "category": "主食"},
+      {"id": 120, "name": "热汤面", "category": "主食"},
+      {"id": 121, "name": "三明治", "category": "主食"},
+      {"id": 122, "name": "绿豆芽粉条炒鸡蛋", "category": "素菜"},
+      {"id": 123, "name": "炒河粉", "category": "主食"},
+      {"id": 124, "name": "鸡丝凉面", "category": "主食"},
+      {"id": 125, "name": "熬葱油教程", "category": "特色小吃"},
+      {"id": 126, "name": "葱油制作", "category": "特色小吃"},
+      {"id": 127, "name": "葱油拌面", "category": "主食"},
+      {"id": 128, "name": "10分钟搞定的一碗葱油拌面", "category": "主食"},
+      {"id": 129, "name": "炒乌冬面", "category": "主食"},
+      {"id": 130, "name": "多彩蔬菜素乌冬面", "category": "主食"},
+      {"id": 131, "name": "黑椒虾仁炒乌冬面", "category": "主食"},
+      {"id": 132, "name": "日式乌冬面汤面", "category": "主食"},
+      {"id": 133, "name": "豆角焖面", "category": "主食"},
+      {"id": 134, "name": "神仙泡面做法", "category": "主食"},
+      {"id": 135, "name": "番茄肥牛金针菇", "category": "荤菜"},
+      {"id": 136, "name": "红烧牛脊骨", "category": "荤菜"},
+      {"id": 137, "name": "海带排骨肉汤", "category": "汤品"},
+      {"id": 138, "name": "虾仁菠萝炒饭", "category": "主食"},
+      {"id": 139, "name": "滑蛋虾仁", "category": "荤菜"},
+      {"id": 140, "name": "电饭煲腊肠焖饭", "category": "主食"},
+      {"id": 141, "name": "少油的红烧茄子", "category": "素菜"},
+      {"id": 142, "name": "红烧牛肉", "category": "荤菜"},
+      {"id": 143, "name": "令人销魂的红烧家常豆腐", "category": "素菜"},
+      {"id": 144, "name": "蒜蓉粉丝娃娃菜", "category": "素菜"},
+      {"id": 145, "name": "梅菜扣肉", "category": "荤菜"},
+      {"id": 146, "name": "葱花炒鸡蛋", "category": "素菜"},
+      {"id": 147, "name": "韩式烤五花肉", "category": "荤菜"},
+      {"id": 148, "name": "空气炸锅烤世界", "category": "特色小吃"},
+      {"id": 149, "name": "空气炸锅烤牛排", "category": "荤菜"},
+      {"id": 150, "name": "西红柿牛腩", "category": "荤菜"},
+      {"id": 151, "name": "扬州炒饭", "category": "主食"},
+      {"id": 152, "name": "香菇炖鸡汤", "category": "汤品"},
+      {"id": 153, "name": "鸡排(空气炸锅)", "category": "荤菜"},
+      {"id": 154, "name": "空气炸锅小鸡腿", "category": "荤菜"},
+      {"id": 155, "name": "空气炸锅版鸡翅根", "category": "荤菜"},
+      {"id": 156, "name": "香酥香骨鸡腿", "category": "荤菜"},
+      {"id": 157, "name": "清炒莴笋", "category": "素菜"},
+      {"id": 158, "name": "韭菜鸡蛋", "category": "素菜"},
+      {"id": 159, "name": "番茄炒蛋", "category": "素菜"},
+      {"id": 160, "name": "酸辣绿豆芽", "category": "素菜"},
+      {"id": 161, "name": "无签羊肉串", "category": "荤菜"},
+      {"id": 162, "name": "烤羊肉串/孜然羊肉", "category": "荤菜"},
+      {"id": 163, "name": "空气炸锅豆腐", "category": "素菜"},
+      {"id": 164, "name": "五花肉泡菜炒饭", "category": "主食"},
+      {"id": 165, "name": "家常蛋炒饭", "category": "主食"},
+      {"id": 166, "name": "阿婆手撕包菜", "category": "素菜"},
+      {"id": 167, "name": "香菇泡发", "category": "特色小吃"},
+      {"id": 168, "name": "猪肉炖粉条", "category": "荤菜"},
+      {"id": 169, "name": "卷心菜煎鸡蛋", "category": "素菜"},
+      {"id": 170, "name": "包菜粉丝炒鸡蛋", "category": "素菜"},
+      {"id": 171, "name": "香椿炒鸡蛋", "category": "素菜"},
+      {"id": 172, "name": "芹菜炒香干", "category": "素菜"},
+      {"id": 173, "name": "狼牙土豆", "category": "特色小吃"},
+      {"id": 174, "name": "微波炉懒人食谱", "category": "特色小吃"},
+      {"id": 175, "name": "减脂杂粮饭", "category": "主食"},
+      {"id": 176, "name": "空气炸锅五花肉", "category": "荤菜"},
+      {"id": 177, "name": "空气炸锅椒盐土豆", "category": "素菜"},
+      {"id": 178, "name": "梅菜扣肉", "category": "荤菜"},
+      {"id": 179, "name": "香煎鳕鱼", "category": "荤菜"},
+      {"id": 180, "name": "粉条丸子", "category": "主食"},
+      {"id": 181, "name": "酥炸肉丸子", "category": "荤菜"},
+      {"id": 182, "name": "酱油卤肉", "category": "荤菜"},
+      {"id": 183, "name": "葱花大饼", "category": "主食"},
+      {"id": 184, "name": "发面大饼", "category": "主食"},
+      {"id": 185, "name": "猪肉白菜炖粉条", "category": "荤菜"},
+      {"id": 186, "name": "家常饼", "category": "主食"},
+      {"id": 187, "name": "南昌拌粉", "category": "主食"},
+      {"id": 188, "name": "鱼香炒蛋", "category": "素菜"},
+      {"id": 189, "name": "胡萝卜木耳鸡蛋素包子", "category": "主食"},
+      {"id": 190, "name": "川味红焖羊排", "category": "荤菜"},
+      {"id": 191, "name": "川味葱爆羊肉", "category": "荤菜"},
+      {"id": 192, "name": "四川羊肉格格", "category": "荤菜"},
+      {"id": 193, "name": "狼牙土豆", "category": "特色小吃"},
+      {"id": 194, "name": "板栗烧排骨", "category": "荤菜"},
+      {"id": 195, "name": "空气炸锅烤鸡腿", "category": "荤菜"},
+      {"id": 196, "name": "冬瓜排骨汤", "category": "汤品"},
+      {"id": 197, "name": "蒸肉蛋卷", "category": "荤菜"},
+      {"id": 198, "name": "万能调料汁拍黄瓜", "category": "素菜"},
+      {"id": 199, "name": "拌面水饺调料", "category": "特色小吃"},
+      {"id": 200, "name": "低卡蔬果汁", "category": "烘焙饮品"},
+      {"id": 201, "name": "孜然蒜香鸡胸肉", "category": "荤菜"},
+      {"id": 202, "name": "清炒嫩南瓜", "category": "素菜"},
+      {"id": 203, "name": "超下饭的豌豆肉沫", "category": "荤菜"},
+      {"id": 204, "name": "擂辣椒皮蛋茄子", "category": "素菜"},
+      {"id": 205, "name": "番茄滑肉煲", "category": "汤品"},
+      {"id": 206, "name": "豌豆炖猪蹄", "category": "荤菜"},
+      {"id": 207, "name": "香酥炸鸡排", "category": "荤菜"},
+      {"id": 208, "name": "西红柿猪肉丸子汤", "category": "汤品"},
+      {"id": 209, "name": "猪肉丸子汤", "category": "汤品"},
+      {"id": 210, "name": "白菜豆腐煲", "category": "汤品"},
+      {"id": 211, "name": "番茄土豆炖牛腩", "category": "荤菜"},
+      {"id": 212, "name": "麻辣烫", "category": "特色小吃"},
+      {"id": 213, "name": "肉夹馍", "category": "主食"},
+      {"id": 214, "name": "炸鸡块", "category": "荤菜"},
+      {"id": 215, "name": "新疆大盘鸡", "category": "荤菜"},
+      {"id": 216, "name": "红烧牛肉面", "category": "主食"},
+      {"id": 217, "name": "蒜苗炒肉", "category": "荤菜"},
+      {"id": 218, "name": "爆炒红扁豆肉豆", "category": "素菜"},
+      {"id": 219, "name": "家常丝瓜炒肉", "category": "荤菜"},
+      {"id": 220, "name": "红烧冬瓜", "category": "素菜"},
+      {"id": 221, "name": "平底锅紫薯饼", "category": "主食"},
+      {"id": 222, "name": "孜然香辣煎小土豆", "category": "素菜"},
+      {"id": 223, "name": "猪脚面", "category": "主食"},
+      {"id": 224, "name": "卤牛肉", "category": "荤菜"},
+      {"id": 225, "name": "嫩煎鸡胸肉", "category": "荤菜"},
+      {"id": 226, "name": "蒜蓉蒸金针菇", "category": "素菜"},
+      {"id": 227, "name": "煎鸡胸肉", "category": "荤菜"},
+      {"id": 228, "name": "韩式烤五花肉", "category": "荤菜"},
+      {"id": 229, "name": "片儿川+肉丝拌川", "category": "主食"},
+      {"id": 230, "name": "青豆火腿", "category": "素菜"},
+      {"id": 231, "name": "蒜香排骨", "category": "荤菜"},
+      {"id": 232, "name": "酸豆角肉沫", "category": "荤菜"},
+      {"id": 233, "name": "无油香烤鸡胸肉", "category": "荤菜"},
+      {"id": 234, "name": "豌豆猪手汤", "category": "汤品"},
+      {"id": 235, "name": "土豆泥", "category": "素菜"},
+      {"id": 236, "name": "烤牛排", "category": "荤菜"},
+      {"id": 237, "name": "羊肉抓饭", "category": "主食"},
+      {"id": 238, "name": "超美味的韩国拌饭", "category": "主食"},
+      {"id": 239, "name": "川味土豆烧排骨", "category": "荤菜"},
+      {"id": 240, "name": "五花肉干煸土豆片", "category": "荤菜"},
+      {"id": 241, "name": "新疆大盘鸡", "category": "荤菜"},
+      {"id": 242, "name": "麻婆豆腐", "category": "素菜"},
+      {"id": 243, "name": "蒜香排骨(空气炸锅版)", "category": "荤菜"},
+      {"id": 244, "name": "鱼香茄子/豆腐", "category": "素菜"},
+      {"id": 245, "name": "黄瓜魔芋爽", "category": "凉菜"},
+      {"id": 246, "name": "千层饼", "category": "主食"},
+      {"id": 247, "name": "减脂汤", "category": "汤品"},
+      {"id": 248, "name": "家庭版酸辣汤", "category": "汤品"},
+      {"id": 249, "name": "酸辣汤", "category": "汤品"},
+      {"id": 250, "name": "无敌开胃酸辣汤", "category": "汤品"},
+      {"id": 251, "name": "白菜粉丝羊肉汤", "category": "汤品"},
+      {"id": 252, "name": "河南葱花油饼", "category": "主食"},
+      {"id": 253, "name": "双椒鸡丁", "category": "荤菜"},
+      {"id": 254, "name": "葱油扇贝粉丝煲", "category": "荤菜"},
+      {"id": 255, "name": "自制麻辣拌", "category": "特色小吃"},
+      {"id": 256, "name": "黑椒琵琶腿", "category": "荤菜"},
+      {"id": 257, "name": "超好吃的酸辣粉", "category": "主食"},
+      {"id": 258, "name": "可乐鸡翅", "category": "荤菜"},
+      {"id": 259, "name": "蒜蓉金针菇", "category": "素菜"},
+      {"id": 260, "name": "麻辣猪蹄", "category": "荤菜"},
+      {"id": 261, "name": "红烧猪蹄", "category": "荤菜"},
+      {"id": 262, "name": "私房香辣猪蹄", "category": "荤菜"},
+      {"id": 263, "name": "干锅排骨", "category": "荤菜"},
+      {"id": 264, "name": "土豆烧鸡", "category": "荤菜"},
+      {"id": 265, "name": "菜泡饭", "category": "主食"},
+      {"id": 266, "name": "剩米饭", "category": "主食"},
+      {"id": 267, "name": "鲜肉饼", "category": "主食"},
+      {"id": 268, "name": "发面肉饼", "category": "主食"},
+      {"id": 269, "name": "牛油果奇亚籽0糖酸奶杯", "category": "烘焙饮品"},
+      {"id": 270, "name": "手煮奶茶", "category": "烘焙饮品"},
+      {"id": 271, "name": "厦门沙茶面", "category": "主食"},
+      {"id": 272, "name": "土豆丝饼", "category": "主食"},
+      {"id": 273, "name": "东北酸菜炖排骨", "category": "荤菜"},
+      {"id": 274, "name": "五花肉炖酸菜粉条", "category": "荤菜"},
+      {"id": 275, "name": "莴笋木耳炒肉", "category": "荤菜"},
+      {"id": 276, "name": "腊肉炒花菜", "category": "荤菜"},
+      {"id": 277, "name": "番茄鸡肉浓情焗饭", "category": "主食"},
+      {"id": 278, "name": "白灼菜心", "category": "素菜"},
+      {"id": 279, "name": "自制午餐肉", "category": "荤菜"},
+      {"id": 280, "name": "石锅拌饭", "category": "主食"},
+      {"id": 281, "name": "冰箱冷冻水饺做煎饺", "category": "主食"},
+      {"id": 282, "name": "蒜苔炒腊肉", "category": "荤菜"},
+      {"id": 283, "name": "酸菜炖五花肉", "category": "荤菜"},
+      {"id": 284, "name": "羊肉萝卜米线", "category": "主食"},
+      {"id": 285, "name": "秘制酸汤饺子", "category": "主食"},
+      {"id": 286, "name": "家庭版东北麻辣烫", "category": "特色小吃"},
+      {"id": 287, "name": "生煎速冻饺", "category": "主食"},
+      {"id": 288, "name": "河南特色小吃水煎包", "category": "主食"},
+      {"id": 289, "name": "羊肉土豆胡萝卜不仅仅是红烧", "category": "荤菜"},
+      {"id": 290, "name": "猪肉炖粉条", "category": "荤菜"},
+      {"id": 291, "name": "土豆焖饭", "category": "主食"},
+      {"id": 292, "name": "清炖滋补羊排汤", "category": "汤品"},
+      {"id": 293, "name": "泉水牛肉", "category": "荤菜"},
+      {"id": 294, "name": "七爸水煮菜蘸料", "category": "特色小吃"},
+      {"id": 295, "name": "正宗韩式烤肉", "category": "荤菜"},
+      {"id": 296, "name": "羊肉炖白萝卜", "category": "荤菜"},
+      {"id": 297, "name": "喷香羊肉焖饭", "category": "主食"},
+      {"id": 298, "name": "孜然烤羊排", "category": "荤菜"},
+      {"id": 299, "name": "茄子豆角", "category": "素菜"},
+      {"id": 300, "name": "肉沫豆角下饭菜", "category": "荤菜"},
+      {"id": 301, "name": "韭菜炒鸡蛋", "category": "素菜"},
+      {"id": 302, "name": "鱼香茄子煲", "category": "素菜"},
+      {"id": 303, "name": "龙利鱼豆腐煲", "category": "荤菜"},
+      {"id": 304, "name": "蒸胡萝卜", "category": "素菜"},
+      {"id": 305, "name": "粉蒸胡萝卜丝", "category": "素菜"},
+      {"id": 306, "name": "凉拌干张黄瓜胡萝卜丝", "category": "凉菜"},
+      {"id": 307, "name": "白菜汤", "category": "汤品"},
+      {"id": 308, "name": "炸萝卜丸子", "category": "素菜"},
+      {"id": 309, "name": "蚝油焖冬瓜", "category": "素菜"},
+      {"id": 310, "name": "青蒜炒腊肉", "category": "荤菜"},
+      {"id": 311, "name": "腊肉炒蒜苗", "category": "荤菜"},
+      {"id": 312, "name": "水煮肉片", "category": "荤菜"},
+      {"id": 313, "name": "腐竹木耳黄瓜炒", "category": "素菜"},
+      {"id": 314, "name": "糖醋里脊", "category": "荤菜"},
+      {"id": 315, "name": "干炸带鱼", "category": "荤菜"},
+      {"id": 316, "name": "香煎带鱼", "category": "荤菜"},
+      {"id": 317, "name": "酸汤小酥肉", "category": "荤菜"},
+      {"id": 318, "name": "冬瓜排骨汤", "category": "汤品"},
+      {"id": 319, "name": "销魂粉蒸肉", "category": "荤菜"},
+      {"id": 320, "name": "干锅花菜", "category": "素菜"},
+      {"id": 321, "name": "蚝油生菜", "category": "素菜"},
+      {"id": 322, "name": "鱼香肉丝", "category": "荤菜"},
+      {"id": 323, "name": "清蒸鲈鱼", "category": "荤菜"},
+      {"id": 324, "name": "家常炒土豆片", "category": "素菜"},
+      {"id": 325, "name": "凉拌菠菜", "category": "凉菜"},
+      {"id": 326, "name": "洋葱酥卤肉饭", "category": "主食"},
+      {"id": 327, "name": "北非蛋", "category": "主食"},
+      {"id": 328, "name": "猫饭", "category": "主食"},
+      {"id": 329, "name": "凉拌黑木耳", "category": "凉菜"},
+      {"id": 330, "name": "免油炸香脆手枪腿", "category": "荤菜"},
+      {"id": 331, "name": "空气炸锅烤脆皮鸡腿", "category": "荤菜"},
+      {"id": 332, "name": "空气炸锅版手枪鸡腿", "category": "荤菜"},
+      {"id": 333, "name": "辣椒炒肉", "category": "荤菜"},
+      {"id": 334, "name": "糖醋排骨", "category": "荤菜"},
+      {"id": 335, "name": "红烧牛肉土豆", "category": "荤菜"},
+      {"id": 336, "name": "凉拌腐竹", "category": "凉菜"},
+      {"id": 337, "name": "土豆炖牛肉", "category": "荤菜"},
+      {"id": 338, "name": "蒜蓉空心菜", "category": "素菜"},
+      {"id": 339, "name": "空气炸锅孜然小土豆", "category": "素菜"},
+      {"id": 340, "name": "海带排骨汤", "category": "汤品"},
+      {"id": 341, "name": "凉拌酸辣海带丝", "category": "凉菜"},
+      {"id": 342, "name": "夏日快手凉拌面", "category": "主食"},
+      {"id": 343, "name": "凉拌洋葱木耳", "category": "凉菜"},
+      {"id": 344, "name": "蒜蓉粉丝煲", "category": "素菜"},
+      {"id": 345, "name": "凉拌腐竹木耳黄瓜", "category": "凉菜"},
+      {"id": 346, "name": "拍黄瓜", "category": "凉菜"},
+      {"id": 347, "name": "清炒西葫芦", "category": "素菜"},
+      {"id": 348, "name": "炒米干", "category": "主食"},
+      {"id": 349, "name": "莴笋炒肉片", "category": "荤菜"},
+      {"id": 350, "name": "卷心菜炒粉丝", "category": "素菜"}
+    ];
+
+    const categoryBaseCalories = {
+      "荤菜": 520,
+      "素菜": 220,
+      "主食": 430,
+      "汤品": 180,
+      "特色小吃": 320,
+      "烘焙饮品": 360,
+      "凉菜": 160
+    };
+
+    function estimateCalories(recipe) {
+      let kcal = categoryBaseCalories[recipe.category] ?? 300;
+      const name = recipe.name;
+      if (/炸|红烧|扣肉|五花|猪蹄|排骨/.test(name)) kcal += 120;
+      if (/烤|焖|焗|干锅/.test(name)) kcal += 60;
+      if (/鸡胸肉|清炒|白灼|低卡|无油|蔬果/.test(name)) kcal -= 80;
+      if (/汤|羹/.test(name)) kcal -= 40;
+      return Math.max(90, Math.round(kcal));
+    }
+
+    function uniqueCategories(data) {
+      return ["全部", ...new Set(data.map(item => item.category))];
+    }
+
+    const categoryEl = document.getElementById('category');
+    const keywordEl = document.getElementById('keyword');
+    const menuSizeEl = document.getElementById('menuSize');
+    const dishTable = document.getElementById('dishTable');
+    const stats = document.getElementById('stats');
+    const menuResult = document.getElementById('menuResult');
+    const menuHint = document.getElementById('menuHint');
+
+    function getFilteredRecipes() {
+      const cat = categoryEl.value;
+      const keyword = keywordEl.value.trim().toLowerCase();
+      return recipes.filter(r => {
+        const catPass = cat === '全部' || r.category === cat;
+        const keyPass = !keyword || r.name.toLowerCase().includes(keyword);
+        return catPass && keyPass;
+      });
+    }
+
+    function renderStats(data) {
+      const totalKcal = data.reduce((sum, r) => sum + estimateCalories(r), 0);
+      stats.innerHTML = `
+        <span>当前匹配 <strong>${data.length}</strong> 道菜</span>
+        <span>平均热量 <strong>${data.length ? Math.round(totalKcal / data.length) : 0}</strong> kcal/道</span>
+        <span>总菜谱数 <strong>${recipes.length}</strong></span>
+      `;
+    }
+
+    function renderTable() {
+      const data = getFilteredRecipes();
+      renderStats(data);
+      dishTable.innerHTML = data.map(r => `
+        <tr>
+          <td>${r.id}</td>
+          <td>${r.name}</td>
+          <td>${r.category}</td>
+          <td>${estimateCalories(r)} kcal</td>
+        </tr>
+      `).join('');
+    }
+
+    function randomPick(arr, n) {
+      const pool = [...arr];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      return pool.slice(0, n);
+    }
+
+    function renderRandomMenu() {
+      const data = getFilteredRecipes();
+      const menuSize = Number(menuSizeEl.value);
+      const picks = randomPick(data, Math.min(menuSize, data.length));
+
+      if (!picks.length) {
+        menuResult.innerHTML = '';
+        menuHint.textContent = '当前筛选条件下无菜谱，请调整分类或关键词。';
+        return;
+      }
+
+      const total = picks.reduce((sum, r) => sum + estimateCalories(r), 0);
+      menuResult.innerHTML = picks.map(r => `
+        <article class="dish">
+          <h4>${r.name}</h4>
+          <div><span class="tag">${r.category}</span><span class="kcal">≈ ${estimateCalories(r)} kcal</span></div>
+        </article>
+      `).join('');
+      menuHint.textContent = `本次菜单共 ${picks.length} 道，预估总热量约 ${total} kcal。`;
+    }
+
+    function setupCategory() {
+      const categories = uniqueCategories(recipes);
+      categoryEl.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    document.getElementById('randomBtn').addEventListener('click', renderRandomMenu);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      categoryEl.value = '全部';
+      keywordEl.value = '';
+      menuSizeEl.value = '4';
+      renderTable();
+      menuResult.innerHTML = '';
+      menuHint.textContent = '点击“随机生成菜单”查看推荐。';
+    });
+    categoryEl.addEventListener('change', renderTable);
+    keywordEl.addEventListener('input', renderTable);
+
+    setupCategory();
+    renderTable();
+  </script>
+</body>
+</html>
