@@ -5,70 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>不同年龄阶段主要死亡原因及比例分析</title>
   <style>
-    :root { --bg:#f8fafc; --card:#fff; --text:#1f2937; --muted:#64748b; --border:#e2e8f0; --brand:#2563eb; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { max-width: 1120px; margin: 24px auto; background:var(--card); border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,.08); overflow:hidden; }
-    .header { background:#1e293b; color:#fff; padding:24px; }
-    .header h1 { margin:0 0 8px; font-size:28px; }
-    .header p { margin:0; color:#cbd5e1; }
-    .tabs { display:flex; flex-wrap:wrap; border-bottom:1px solid var(--border); background:#f8fafc; }
-    .tab { flex:1; min-width:220px; border:0; padding:14px; cursor:pointer; background:transparent; font-weight:600; color:#475569; }
-    .tab.active { color:var(--brand); border-bottom:3px solid var(--brand); background:#eff6ff; }
-    .content { padding:20px; }
-    .panel { display:none; }
-    .panel.active { display:block; }
-    .hint { color:#475569; margin:0 0 16px; }
-    .chart { width:100%; border:1px solid var(--border); border-radius:12px; padding:12px; background:#fff; }
-    .legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; font-size:13px; color:#334155; }
-    .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
-    .grid { display:grid; grid-template-columns: 240px 1fr; gap:16px; }
-    .age-btn { width:100%; border:1px solid var(--border); border-radius:10px; background:#fff; padding:10px 12px; margin-bottom:8px; cursor:pointer; text-align:left; }
-    .age-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
-    .rank { margin:0; padding:0; list-style:none; }
-    .rank li { display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed var(--border); padding:8px 0; }
-    .rank b { display:inline-block; min-width:1.5em; }
-    @media (max-width: 900px) { .grid { grid-template-columns:1fr; } }
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#f8fafc;color:#1f2937}
+    .wrap{max-width:1200px;margin:24px auto;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);overflow:hidden}
+    .head{background:#1e293b;color:#fff;padding:24px}
+    .head h1{margin:0 0 8px;font-size:28px}
+    .head p{margin:0;color:#cbd5e1}
+    .tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+    .tab{flex:1;min-width:220px;border:0;background:transparent;padding:14px;cursor:pointer;color:#475569;font-weight:600}
+    .tab.active{color:#2563eb;background:#eff6ff;border-bottom:3px solid #2563eb}
+    .panel{display:none;padding:20px}.panel.active{display:block}
+    .desc{margin:0 0 14px;color:#475569}
+    .chart{width:100%;height:520px}
+    .chart-sm{width:100%;height:420px}
+    .detail{display:grid;grid-template-columns:240px 1fr;gap:16px}
+    .age-btn{width:100%;text-align:left;border:1px solid #dbe3ee;background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+    .age-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+    .card{border:1px solid #e2e8f0;border-radius:12px;padding:12px}
+    .rank li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0}
+    @media (max-width: 900px){.detail{grid-template-columns:1fr}}
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 </head>
 <body>
   <div class="wrap">
-    <div class="header">
+    <div class="head">
       <h1>❤️ 不同年龄阶段主要死亡原因及比例分析</h1>
-      <p>离线版页面：不依赖外部 CDN，浏览器直接打开也可显示图表。</p>
+      <p>使用外部 CDN 动态渲染图表（ECharts）。</p>
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="overall">死因结构演变（堆叠柱图）</button>
-      <button class="tab" data-tab="volume">死亡人数与占比（双轴）</button>
-      <button class="tab" data-tab="details">年龄段深度剖析（饼图+排行）</button>
+      <button class="tab active" data-tab="overall">死因结构演变（堆叠柱状图）</button>
+      <button class="tab" data-tab="volume">各年龄段死亡人数与概率（双轴图）</button>
+      <button class="tab" data-tab="details">各年龄段深度剖析（饼图及排行）</button>
     </div>
 
-    <div class="content">
-      <section id="overall" class="panel active">
-        <p class="hint">展示不同年龄段主要死因构成（百分比）。</p>
-        <div class="chart"><svg id="overallSvg" viewBox="0 0 980 420" width="100%"></svg><div id="overallLegend" class="legend"></div></div>
-      </section>
+    <section id="overall" class="panel active">
+      <p class="desc">随着年龄增长，主要死因从先天/感染/意外逐步转向恶性肿瘤和心血管疾病。</p>
+      <div id="overallChart" class="chart"></div>
+    </section>
 
-      <section id="volume" class="panel">
-        <p class="hint">柱形表示每年死亡人数（百万），折线表示占总死亡比例（%）。</p>
-        <div class="chart"><svg id="volumeSvg" viewBox="0 0 980 420" width="100%"></svg></div>
-      </section>
+    <section id="volume" class="panel">
+      <p class="desc">柱状图表示各年龄段每年死亡人数（百万），折线表示其占总死亡数比例（%）。</p>
+      <div id="volumeChart" class="chart-sm"></div>
+    </section>
 
-      <section id="details" class="panel">
-        <div class="grid">
-          <div>
-            <h3 style="margin-top:0;">选择年龄段</h3>
-            <div id="ageButtons"></div>
-          </div>
-          <div class="chart">
-            <h3 id="detailTitle" style="margin-top:0;"></h3>
-            <svg id="pieSvg" viewBox="0 0 560 300" width="100%"></svg>
-            <ul id="rankList" class="rank"></ul>
-          </div>
+    <section id="details" class="panel">
+      <div class="detail">
+        <div>
+          <h3 style="margin-top:0">选择年龄段</h3>
+          <div id="ageButtons"></div>
         </div>
-      </section>
-    </div>
+        <div class="card">
+          <h3 id="detailTitle" style="margin-top:0"></h3>
+          <div id="pieChart" class="chart-sm"></div>
+          <ul id="rankList" class="rank"></ul>
+        </div>
+      </div>
+    </section>
   </div>
 
 <script>
@@ -77,61 +70,88 @@ const data = [
   { ageGroup:'15-29岁', deaths:2.5, deathRatio:4.3, '意外伤害与暴力':50, '神经与精神疾病':15, '其他死因':13, '恶性肿瘤(癌症)':10, '心血管疾病':5, '感染及寄生虫病':5, '呼吸系统疾病':2, '新生儿及先天疾病':0 },
   { ageGroup:'30-49岁', deaths:5.8, deathRatio:10.0, '恶性肿瘤(癌症)':30, '意外伤害与暴力':20, '心血管疾病':20, '其他死因':10, '感染及寄生虫病':10, '呼吸系统疾病':5, '神经与精神疾病':5, '新生儿及先天疾病':0 },
   { ageGroup:'50-69岁', deaths:15.5, deathRatio:26.8, '恶性肿瘤(癌症)':40, '心血管疾病':35, '呼吸系统疾病':10, '其他死因':5, '意外伤害与暴力':5, '感染及寄生虫病':3, '神经与精神疾病':2, '新生儿及先天疾病':0 },
-  { ageGroup:'70岁以上', deaths:27.8, deathRatio:48.2, '心血管疾病':45, '恶性肿瘤(癌症)':20, '呼吸系统疾病':15, '神经与精神疾病':10, '感染及寄生虫病':5, '其他死因':3, '意外伤害与暴力':2, '新生儿及先天疾病':0 },
+  { ageGroup:'70岁以上', deaths:27.8, deathRatio:48.2, '心血管疾病':45, '恶性肿瘤(癌症)':20, '呼吸系统疾病':15, '神经与精神疾病':10, '感染及寄生虫病':5, '其他死因':3, '意外伤害与暴力':2, '新生儿及先天疾病':0 }
 ];
-const colors = { '新生儿及先天疾病':'#f472b6','感染及寄生虫病':'#34d399','意外伤害与暴力':'#fb923c','恶性肿瘤(癌症)':'#ef4444','心血管疾病':'#3b82f6','呼吸系统疾病':'#06b6d4','神经与精神疾病':'#a855f7','其他死因':'#9ca3af' };
+const colors = {
+  '新生儿及先天疾病':'#f472b6','感染及寄生虫病':'#34d399','意外伤害与暴力':'#fb923c','恶性肿瘤(癌症)':'#ef4444',
+  '心血管疾病':'#3b82f6','呼吸系统疾病':'#06b6d4','神经与精神疾病':'#a855f7','其他死因':'#9ca3af'
+};
 const causes = Object.keys(colors);
+const ageGroups = data.map(d=>d.ageGroup);
 
-function el(tag, attrs={}) { const node = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v)); return node; }
-function clear(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+const overallChart = echarts.init(document.getElementById('overallChart'));
+const volumeChart = echarts.init(document.getElementById('volumeChart'));
+const pieChart = echarts.init(document.getElementById('pieChart'));
 
-function drawOverall(){
-  const svg = document.getElementById('overallSvg'); clear(svg);
-  const left=60, top=20, bottom=40, height=340, w=130, gap=45;
-  for(let t=0;t<=100;t+=20){ const y=top+height-(t/100)*height; svg.appendChild(el('line',{x1:left,y1:y,x2:960,y2:y,stroke:'#e5e7eb'})); const tx=el('text',{x:18,y:y+4,fill:'#64748b','font-size':'12'}); tx.textContent=t+'%'; svg.appendChild(tx); }
-  data.forEach((d,i)=>{ let x=left+i*(w+gap), y=top+height;
-    causes.forEach(c=>{ let v=d[c]||0; if(!v) return; const h=(v/100)*height; y-=h; svg.appendChild(el('rect',{x,y,width:w,height:h,fill:colors[c]})); });
-    const label=el('text',{x:x+w/2,y:top+height+24,'text-anchor':'middle',fill:'#334155','font-size':'13'}); label.textContent=d.ageGroup; svg.appendChild(label);
+function renderOverall(){
+  overallChart.setOption({
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+    legend:{top:10},
+    grid:{left:50,right:20,top:50,bottom:40},
+    xAxis:{type:'category',data:ageGroups},
+    yAxis:{type:'value',name:'占比(%)',max:100},
+    series: causes.map(c=>({name:c,type:'bar',stack:'total',itemStyle:{color:colors[c]},data:data.map(d=>d[c]||0)}))
   });
-  const lg=document.getElementById('overallLegend'); lg.innerHTML='';
-  causes.forEach(c=>{ const item=document.createElement('span'); item.innerHTML=`<i class="dot" style="background:${colors[c]}"></i>${c}`; lg.appendChild(item); });
 }
 
-function drawVolume(){
-  const svg=document.getElementById('volumeSvg'); clear(svg);
-  const left=60,right=900,top=20,height=330,bottomY=top+height,w=90,gap=60; const maxD=30,maxR=50;
-  for(let t=0;t<=30;t+=5){ const y=bottomY-(t/maxD)*height; svg.appendChild(el('line',{x1:left,y1:y,x2:right,y2:y,stroke:'#edf2f7'})); const tx=el('text',{x:10,y:y+4,fill:'#4f46e5','font-size':'12'}); tx.textContent=t+'M'; svg.appendChild(tx); }
-  for(let t=0;t<=50;t+=10){ const y=bottomY-(t/maxR)*height; const tx=el('text',{x:915,y:y+4,fill:'#e11d48','font-size':'12'}); tx.textContent=t+'%'; svg.appendChild(tx); }
-  let pts=[];
-  data.forEach((d,i)=>{ const x=left+20+i*(w+gap); const h=(d.deaths/maxD)*height; const y=bottomY-h; svg.appendChild(el('rect',{x,y,width:w,height:h,fill:'#818cf8',rx:6}));
-    const cx=x+w/2, cy=bottomY-(d.deathRatio/maxR)*height; pts.push(`${cx},${cy}`); svg.appendChild(el('circle',{cx,cy,r:4,fill:'#e11d48'}));
-    const lb=el('text',{x:cx,y:bottomY+24,'text-anchor':'middle',fill:'#334155','font-size':'13'}); lb.textContent=d.ageGroup; svg.appendChild(lb);
+function renderVolume(){
+  volumeChart.setOption({
+    tooltip:{trigger:'axis'},
+    legend:{top:10,data:['每年死亡人数 (百万)','占总死亡数比例']},
+    grid:{left:50,right:60,top:50,bottom:40},
+    xAxis:{type:'category',data:ageGroups},
+    yAxis:[
+      {type:'value',name:'百万',axisLabel:{formatter:'{value}M'}},
+      {type:'value',name:'占比',axisLabel:{formatter:'{value}%'}}
+    ],
+    series:[
+      {name:'每年死亡人数 (百万)',type:'bar',data:data.map(d=>d.deaths),itemStyle:{color:'#818cf8'}},
+      {name:'占总死亡数比例',type:'line',yAxisIndex:1,data:data.map(d=>d.deathRatio),smooth:true,itemStyle:{color:'#e11d48'}}
+    ]
   });
-  svg.appendChild(el('polyline',{points:pts.join(' '),fill:'none',stroke:'#e11d48','stroke-width':3}));
 }
 
-function drawPie(group){
-  const d=data.find(x=>x.ageGroup===group); document.getElementById('detailTitle').textContent = `${group} 主要死因分布`;
-  const list=Object.entries(d).filter(([k,v])=>causes.includes(k)&&v>0).map(([name,val])=>({name,val})).sort((a,b)=>b.val-a.val);
-  const svg=document.getElementById('pieSvg'); clear(svg);
-  let start=0, cx=160, cy=150, r=100;
-  list.forEach(item=>{ const angle=item.val/100*2*Math.PI, end=start+angle; const x1=cx+r*Math.cos(start), y1=cy+r*Math.sin(start), x2=cx+r*Math.cos(end), y2=cy+r*Math.sin(end); const large=angle>Math.PI?1:0;
-    const path=`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`; const p=el('path',{d:path,fill:colors[item.name],stroke:'#fff','stroke-width':2}); svg.appendChild(p);
-    const mid=(start+end)/2, tx=cx+(r+22)*Math.cos(mid), ty=cy+(r+22)*Math.sin(mid); const t=el('text',{x:tx,y:ty,'font-size':'12',fill:'#334155','text-anchor':tx>cx?'start':'end'}); t.textContent=item.val+'%'; svg.appendChild(t);
-    start=end;
+function renderDetail(ageGroup){
+  const row = data.find(d=>d.ageGroup===ageGroup);
+  const pieData = causes.map(c=>({name:c,value:row[c]||0})).filter(x=>x.value>0).sort((a,b)=>b.value-a.value);
+  document.getElementById('detailTitle').textContent = `${ageGroup} 主要死因分布`;
+  pieChart.setOption({
+    tooltip:{trigger:'item',formatter:'{b}: {c}% ({d}%)'},
+    series:[{type:'pie',radius:['35%','68%'],center:['50%','50%'],data:pieData,itemStyle:{color:(p)=>colors[p.name]}}]
   });
-  const rank=document.getElementById('rankList'); rank.innerHTML='';
-  list.forEach((item,i)=>{ const li=document.createElement('li'); li.innerHTML=`<span><b style="color:${colors[item.name]}">${i+1}.</b> ${item.name}</span><strong style="color:${colors[item.name]}">${item.val}%</strong>`; rank.appendChild(li); });
+  const ul=document.getElementById('rankList'); ul.innerHTML='';
+  pieData.forEach((x,i)=>{ const li=document.createElement('li'); li.innerHTML=`<span><b style="color:${colors[x.name]}">${i+1}.</b> ${x.name}</span><strong style="color:${colors[x.name]}">${x.value}%</strong>`; ul.appendChild(li); });
 }
 
-function init(){
-  drawOverall(); drawVolume();
-  document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); });
+function initAgeButtons(){
   const host=document.getElementById('ageButtons');
-  data.forEach((d,i)=>{ const b=document.createElement('button'); b.className='age-btn'+(i===0?' active':''); b.textContent=d.ageGroup; b.onclick=()=>{ document.querySelectorAll('.age-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); drawPie(d.ageGroup); }; host.appendChild(b); });
-  drawPie(data[0].ageGroup);
+  data.forEach((d,i)=>{
+    const btn=document.createElement('button');
+    btn.className='age-btn'+(i===0?' active':'');
+    btn.textContent=d.ageGroup;
+    btn.onclick=()=>{ document.querySelectorAll('.age-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); renderDetail(d.ageGroup); };
+    host.appendChild(btn);
+  });
 }
-init();
+
+function initTabs(){
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      setTimeout(()=>{ overallChart.resize(); volumeChart.resize(); pieChart.resize(); },100);
+    };
+  });
+}
+
+window.addEventListener('resize',()=>{ overallChart.resize(); volumeChart.resize(); pieChart.resize(); });
+initTabs();
+initAgeButtons();
+renderOverall();
+renderVolume();
+renderDetail(data[0].ageGroup);
 </script>
 </body>
 </html>
