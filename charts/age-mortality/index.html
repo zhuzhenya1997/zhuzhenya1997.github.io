@@ -4,118 +4,134 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>不同年龄阶段主要死亡原因及比例分析</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root { --bg:#f8fafc; --card:#fff; --text:#1f2937; --muted:#64748b; --border:#e2e8f0; --brand:#2563eb; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width: 1120px; margin: 24px auto; background:var(--card); border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,.08); overflow:hidden; }
+    .header { background:#1e293b; color:#fff; padding:24px; }
+    .header h1 { margin:0 0 8px; font-size:28px; }
+    .header p { margin:0; color:#cbd5e1; }
+    .tabs { display:flex; flex-wrap:wrap; border-bottom:1px solid var(--border); background:#f8fafc; }
+    .tab { flex:1; min-width:220px; border:0; padding:14px; cursor:pointer; background:transparent; font-weight:600; color:#475569; }
+    .tab.active { color:var(--brand); border-bottom:3px solid var(--brand); background:#eff6ff; }
+    .content { padding:20px; }
+    .panel { display:none; }
+    .panel.active { display:block; }
+    .hint { color:#475569; margin:0 0 16px; }
+    .chart { width:100%; border:1px solid var(--border); border-radius:12px; padding:12px; background:#fff; }
+    .legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; font-size:13px; color:#334155; }
+    .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
+    .grid { display:grid; grid-template-columns: 240px 1fr; gap:16px; }
+    .age-btn { width:100%; border:1px solid var(--border); border-radius:10px; background:#fff; padding:10px 12px; margin-bottom:8px; cursor:pointer; text-align:left; }
+    .age-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+    .rank { margin:0; padding:0; list-style:none; }
+    .rank li { display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed var(--border); padding:8px 0; }
+    .rank b { display:inline-block; min-width:1.5em; }
+    @media (max-width: 900px) { .grid { grid-template-columns:1fr; } }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <div id="root"></div>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>❤️ 不同年龄阶段主要死亡原因及比例分析</h1>
+      <p>离线版页面：不依赖外部 CDN，浏览器直接打开也可显示图表。</p>
+    </div>
 
-  <script type="text/babel">
-    const { useMemo, useState } = React;
-    const {
-      BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-      PieChart, Pie, Cell, Sector, ComposedChart, Line
-    } = Recharts;
+    <div class="tabs">
+      <button class="tab active" data-tab="overall">死因结构演变（堆叠柱图）</button>
+      <button class="tab" data-tab="volume">死亡人数与占比（双轴）</button>
+      <button class="tab" data-tab="details">年龄段深度剖析（饼图+排行）</button>
+    </div>
 
-    const data = [
-      { ageGroup: '0-14岁', deaths: 6.2, deathRatio: 10.7, '新生儿及先天疾病': 50, '感染及寄生虫病': 20, '意外伤害与暴力': 10, '呼吸系统疾病': 8, '恶性肿瘤(癌症)': 5, '心血管疾病': 2, '神经与精神疾病': 0, '其他死因': 5 },
-      { ageGroup: '15-29岁', deaths: 2.5, deathRatio: 4.3, '意外伤害与暴力': 50, '神经与精神疾病': 15, '其他死因': 13, '恶性肿瘤(癌症)': 10, '心血管疾病': 5, '感染及寄生虫病': 5, '呼吸系统疾病': 2, '新生儿及先天疾病': 0 },
-      { ageGroup: '30-49岁', deaths: 5.8, deathRatio: 10.0, '恶性肿瘤(癌症)': 30, '意外伤害与暴力': 20, '心血管疾病': 20, '其他死因': 10, '感染及寄生虫病': 10, '呼吸系统疾病': 5, '神经与精神疾病': 5, '新生儿及先天疾病': 0 },
-      { ageGroup: '50-69岁', deaths: 15.5, deathRatio: 26.8, '恶性肿瘤(癌症)': 40, '心血管疾病': 35, '呼吸系统疾病': 10, '其他死因': 5, '意外伤害与暴力': 5, '感染及寄生虫病': 3, '神经与精神疾病': 2, '新生儿及先天疾病': 0 },
-      { ageGroup: '70岁以上', deaths: 27.8, deathRatio: 48.2, '心血管疾病': 45, '恶性肿瘤(癌症)': 20, '呼吸系统疾病': 15, '神经与精神疾病': 10, '感染及寄生虫病': 5, '其他死因': 3, '意外伤害与暴力': 2, '新生儿及先天疾病': 0 },
-    ];
+    <div class="content">
+      <section id="overall" class="panel active">
+        <p class="hint">展示不同年龄段主要死因构成（百分比）。</p>
+        <div class="chart"><svg id="overallSvg" viewBox="0 0 980 420" width="100%"></svg><div id="overallLegend" class="legend"></div></div>
+      </section>
 
-    const COLORS = {
-      '新生儿及先天疾病': '#f472b6',
-      '感染及寄生虫病': '#34d399',
-      '意外伤害与暴力': '#fb923c',
-      '恶性肿瘤(癌症)': '#ef4444',
-      '心血管疾病': '#3b82f6',
-      '呼吸系统疾病': '#06b6d4',
-      '神经与精神疾病': '#a855f7',
-      '其他死因': '#9ca3af',
-    };
+      <section id="volume" class="panel">
+        <p class="hint">柱形表示每年死亡人数（百万），折线表示占总死亡比例（%）。</p>
+        <div class="chart"><svg id="volumeSvg" viewBox="0 0 980 420" width="100%"></svg></div>
+      </section>
 
-    const ICONS = {
-      '新生儿及先天疾病': '👶',
-      '感染及寄生虫病': '🛡️',
-      '意外伤害与暴力': '⚠️',
-      '恶性肿瘤(癌症)': '🩺',
-      '心血管疾病': '❤️',
-      '呼吸系统疾病': '🌬️',
-      '神经与精神疾病': '🧠',
-      '其他死因': '📊'
-    };
-
-    const renderActiveShape = (props) => {
-      const RADIAN = Math.PI / 180;
-      const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, value } = props;
-      const sin = Math.sin(-RADIAN * midAngle);
-      const cos = Math.cos(-RADIAN * midAngle);
-      const sx = cx + (outerRadius + 10) * cos;
-      const sy = cy + (outerRadius + 10) * sin;
-      const mx = cx + (outerRadius + 30) * cos;
-      const my = cy + (outerRadius + 30) * sin;
-      const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-      const ey = my;
-      const textAnchor = cos >= 0 ? 'start' : 'end';
-
-      return (
-        <g>
-          <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} className="text-lg font-bold">{payload.name}</text>
-          <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} />
-          <Sector cx={cx} cy={cy} startAngle={startAngle} endAngle={endAngle} innerRadius={outerRadius + 6} outerRadius={outerRadius + 10} fill={fill} />
-          <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
-          <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-          <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333" className="font-semibold">{`${value}%`}</text>
-        </g>
-      );
-    };
-
-    function App() {
-      const [activeTab, setActiveTab] = useState('overall');
-      const [selectedAgeGroup, setSelectedAgeGroup] = useState(data[0].ageGroup);
-      const [pieActiveIndex, setPieActiveIndex] = useState(0);
-
-      const currentPieData = useMemo(() => data.find(d => d.ageGroup === selectedAgeGroup), [selectedAgeGroup]);
-      const pieChartData = useMemo(() => Object.keys(currentPieData)
-        .filter(key => key !== 'ageGroup' && key !== 'deaths' && key !== 'deathRatio' && currentPieData[key] > 0)
-        .map(key => ({ name: key, value: currentPieData[key] }))
-        .sort((a, b) => b.value - a.value), [currentPieData]);
-
-      return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans text-gray-800">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-slate-800 p-6 md:p-8 text-white">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">❤️ 不同年龄阶段主要死亡原因及比例分析</h1>
-              <p className="text-slate-300 text-sm md:text-base">基于全球健康流行病学趋势的代表性数据（数据仅供趋势参考，总和为100%）</p>
-            </div>
-
-            <div className="flex border-b border-gray-200 bg-gray-50/50 flex-col md:flex-row">
-              <button className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${activeTab === 'overall' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`} onClick={() => setActiveTab('overall')}>死因结构演变 (堆叠柱状图)</button>
-              <button className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${activeTab === 'volume' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`} onClick={() => setActiveTab('volume')}>各年龄段死亡人数与概率 (双轴图)</button>
-              <button className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${activeTab === 'details' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`} onClick={() => setActiveTab('details')}>各年龄段深度剖析 (饼图及排行)</button>
-            </div>
-
-            <div className="p-6 md:p-8">
-              {activeTab === 'overall' && <div className="space-y-6 flex flex-col items-center"><div className="text-center max-w-3xl mb-4"><p className="text-gray-600">此图表展示了随着年龄的增长，导致死亡的主要原因是如何发生演变的。可以清晰地看到从早期的<span className="font-semibold text-pink-500">先天疾病</span>和<span className="font-semibold text-orange-500">意外伤害</span>，逐渐过渡到中老年的<span className="font-semibold text-red-500">恶性肿瘤</span>和<span className="font-semibold text-blue-500">心血管疾病</span>。</p></div>
-              <div className="w-full h-[500px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}><CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" /><XAxis dataKey="ageGroup" axisLine={false} tickLine={false} tick={{fill: '#4b5563', fontSize: 14, fontWeight: 500}} dy={10} /><YAxis tickFormatter={(tick) => `${tick}%`} axisLine={false} tickLine={false} tick={{fill: '#6b7280'}} /><Tooltip formatter={(value, name) => [`${value}%`, name]} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{fill: '#f3f4f6'}} /><Legend wrapperStyle={{ paddingTop: '20px' }} />{Object.keys(COLORS).map((key) => (<Bar key={key} dataKey={key} stackId="a" fill={COLORS[key]} maxBarSize={60} />))}</BarChart></ResponsiveContainer></div></div>}
-
-              {activeTab === 'volume' && <div className="space-y-6 flex flex-col items-center"><div className="text-center max-w-3xl mb-4"><p className="text-gray-600">此图表展示了全球每年在不同年龄段的<span className="font-semibold text-indigo-600">绝对死亡人数</span>（柱状图，基于全球年度估算总量）以及该年龄段占总体死亡人口的<span className="font-semibold text-rose-500">死亡发生概率占比</span>（折线图）。</p></div>
-              <div className="w-full h-[400px]"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}><CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" /><XAxis dataKey="ageGroup" axisLine={false} tickLine={false} tick={{fill: '#4b5563', fontSize: 14, fontWeight: 500}} dy={10} /><YAxis yAxisId="left" tickFormatter={(tick) => `${tick}M`} axisLine={false} tickLine={false} tick={{fill: '#4f46e5'}} /><YAxis yAxisId="right" orientation="right" tickFormatter={(tick) => `${tick}%`} axisLine={false} tickLine={false} tick={{fill: '#e11d48'}} /><Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value, name) => { if (name === '每年死亡人数 (百万)') return [`${value} 百万人`, name]; if (name === '占总死亡数比例') return [`${value}%`, name]; return [value, name]; }} /><Legend wrapperStyle={{ paddingTop: '20px' }} /><Bar yAxisId="left" dataKey="deaths" name="每年死亡人数 (百万)" fill="#818cf8" radius={[6, 6, 0, 0]} maxBarSize={60} /><Line yAxisId="right" type="monotone" dataKey="deathRatio" name="占总死亡数比例" stroke="#e11d48" strokeWidth={3} dot={{r: 6, fill: '#e11d48', strokeWidth: 2, stroke: '#fff'}} /></ComposedChart></ResponsiveContainer></div></div>}
-
-              {activeTab === 'details' && <div className="flex flex-col lg:flex-row gap-8"><div className="w-full lg:w-1/4 flex flex-col gap-2"><h3 className="font-bold text-gray-700 mb-2 px-2">选择年龄段</h3>{data.map((d) => (<button key={d.ageGroup} onClick={() => { setSelectedAgeGroup(d.ageGroup); setPieActiveIndex(0); }} className={`text-left px-4 py-3 rounded-xl transition-all font-medium ${selectedAgeGroup === d.ageGroup ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:border-blue-300 hover:bg-blue-50'}`}>{d.ageGroup}</button>))}</div>
-              <div className="w-full lg:w-3/4 bg-white border border-gray-100 rounded-2xl p-6 shadow-sm"><h2 className="text-2xl font-bold text-center text-gray-800 mb-6">{selectedAgeGroup} 主要死因分布</h2><div className="flex flex-col md:flex-row items-center justify-between"><div className="w-full md:w-1/2 h-[350px]"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie activeIndex={pieActiveIndex} activeShape={renderActiveShape} data={pieChartData} cx="50%" cy="50%" innerRadius={80} outerRadius={110} dataKey="value" onMouseEnter={(_, index) => setPieActiveIndex(index)}>{pieChartData.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[entry.name]} />))}</Pie></PieChart></ResponsiveContainer></div><div className="w-full md:w-1/2 mt-8 md:mt-0"><h3 className="font-semibold text-gray-500 uppercase tracking-wider text-xs mb-3 pl-2">死因占比排行</h3><div className="space-y-3">{pieChartData.map((item, index) => (<div key={index} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors group"><div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm" style={{ backgroundColor: COLORS[item.name] }}>{index + 1}</div><div className="flex items-center gap-2"><span>{ICONS[item.name] || '📌'}</span><span className="font-medium text-gray-700 group-hover:text-gray-900">{item.name}</span></div></div><div className="font-bold text-lg" style={{ color: COLORS[item.name] }}>{item.value}%</div></div>))}</div></div></div></div></div>}
-            </div>
+      <section id="details" class="panel">
+        <div class="grid">
+          <div>
+            <h3 style="margin-top:0;">选择年龄段</h3>
+            <div id="ageButtons"></div>
+          </div>
+          <div class="chart">
+            <h3 id="detailTitle" style="margin-top:0;"></h3>
+            <svg id="pieSvg" viewBox="0 0 560 300" width="100%"></svg>
+            <ul id="rankList" class="rank"></ul>
           </div>
         </div>
-      );
-    }
+      </section>
+    </div>
+  </div>
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-  </script>
+<script>
+const data = [
+  { ageGroup:'0-14岁', deaths:6.2, deathRatio:10.7, '新生儿及先天疾病':50, '感染及寄生虫病':20, '意外伤害与暴力':10, '呼吸系统疾病':8, '恶性肿瘤(癌症)':5, '心血管疾病':2, '神经与精神疾病':0, '其他死因':5 },
+  { ageGroup:'15-29岁', deaths:2.5, deathRatio:4.3, '意外伤害与暴力':50, '神经与精神疾病':15, '其他死因':13, '恶性肿瘤(癌症)':10, '心血管疾病':5, '感染及寄生虫病':5, '呼吸系统疾病':2, '新生儿及先天疾病':0 },
+  { ageGroup:'30-49岁', deaths:5.8, deathRatio:10.0, '恶性肿瘤(癌症)':30, '意外伤害与暴力':20, '心血管疾病':20, '其他死因':10, '感染及寄生虫病':10, '呼吸系统疾病':5, '神经与精神疾病':5, '新生儿及先天疾病':0 },
+  { ageGroup:'50-69岁', deaths:15.5, deathRatio:26.8, '恶性肿瘤(癌症)':40, '心血管疾病':35, '呼吸系统疾病':10, '其他死因':5, '意外伤害与暴力':5, '感染及寄生虫病':3, '神经与精神疾病':2, '新生儿及先天疾病':0 },
+  { ageGroup:'70岁以上', deaths:27.8, deathRatio:48.2, '心血管疾病':45, '恶性肿瘤(癌症)':20, '呼吸系统疾病':15, '神经与精神疾病':10, '感染及寄生虫病':5, '其他死因':3, '意外伤害与暴力':2, '新生儿及先天疾病':0 },
+];
+const colors = { '新生儿及先天疾病':'#f472b6','感染及寄生虫病':'#34d399','意外伤害与暴力':'#fb923c','恶性肿瘤(癌症)':'#ef4444','心血管疾病':'#3b82f6','呼吸系统疾病':'#06b6d4','神经与精神疾病':'#a855f7','其他死因':'#9ca3af' };
+const causes = Object.keys(colors);
+
+function el(tag, attrs={}) { const node = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v)); return node; }
+function clear(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+
+function drawOverall(){
+  const svg = document.getElementById('overallSvg'); clear(svg);
+  const left=60, top=20, bottom=40, height=340, w=130, gap=45;
+  for(let t=0;t<=100;t+=20){ const y=top+height-(t/100)*height; svg.appendChild(el('line',{x1:left,y1:y,x2:960,y2:y,stroke:'#e5e7eb'})); const tx=el('text',{x:18,y:y+4,fill:'#64748b','font-size':'12'}); tx.textContent=t+'%'; svg.appendChild(tx); }
+  data.forEach((d,i)=>{ let x=left+i*(w+gap), y=top+height;
+    causes.forEach(c=>{ let v=d[c]||0; if(!v) return; const h=(v/100)*height; y-=h; svg.appendChild(el('rect',{x,y,width:w,height:h,fill:colors[c]})); });
+    const label=el('text',{x:x+w/2,y:top+height+24,'text-anchor':'middle',fill:'#334155','font-size':'13'}); label.textContent=d.ageGroup; svg.appendChild(label);
+  });
+  const lg=document.getElementById('overallLegend'); lg.innerHTML='';
+  causes.forEach(c=>{ const item=document.createElement('span'); item.innerHTML=`<i class="dot" style="background:${colors[c]}"></i>${c}`; lg.appendChild(item); });
+}
+
+function drawVolume(){
+  const svg=document.getElementById('volumeSvg'); clear(svg);
+  const left=60,right=900,top=20,height=330,bottomY=top+height,w=90,gap=60; const maxD=30,maxR=50;
+  for(let t=0;t<=30;t+=5){ const y=bottomY-(t/maxD)*height; svg.appendChild(el('line',{x1:left,y1:y,x2:right,y2:y,stroke:'#edf2f7'})); const tx=el('text',{x:10,y:y+4,fill:'#4f46e5','font-size':'12'}); tx.textContent=t+'M'; svg.appendChild(tx); }
+  for(let t=0;t<=50;t+=10){ const y=bottomY-(t/maxR)*height; const tx=el('text',{x:915,y:y+4,fill:'#e11d48','font-size':'12'}); tx.textContent=t+'%'; svg.appendChild(tx); }
+  let pts=[];
+  data.forEach((d,i)=>{ const x=left+20+i*(w+gap); const h=(d.deaths/maxD)*height; const y=bottomY-h; svg.appendChild(el('rect',{x,y,width:w,height:h,fill:'#818cf8',rx:6}));
+    const cx=x+w/2, cy=bottomY-(d.deathRatio/maxR)*height; pts.push(`${cx},${cy}`); svg.appendChild(el('circle',{cx,cy,r:4,fill:'#e11d48'}));
+    const lb=el('text',{x:cx,y:bottomY+24,'text-anchor':'middle',fill:'#334155','font-size':'13'}); lb.textContent=d.ageGroup; svg.appendChild(lb);
+  });
+  svg.appendChild(el('polyline',{points:pts.join(' '),fill:'none',stroke:'#e11d48','stroke-width':3}));
+}
+
+function drawPie(group){
+  const d=data.find(x=>x.ageGroup===group); document.getElementById('detailTitle').textContent = `${group} 主要死因分布`;
+  const list=Object.entries(d).filter(([k,v])=>causes.includes(k)&&v>0).map(([name,val])=>({name,val})).sort((a,b)=>b.val-a.val);
+  const svg=document.getElementById('pieSvg'); clear(svg);
+  let start=0, cx=160, cy=150, r=100;
+  list.forEach(item=>{ const angle=item.val/100*2*Math.PI, end=start+angle; const x1=cx+r*Math.cos(start), y1=cy+r*Math.sin(start), x2=cx+r*Math.cos(end), y2=cy+r*Math.sin(end); const large=angle>Math.PI?1:0;
+    const path=`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`; const p=el('path',{d:path,fill:colors[item.name],stroke:'#fff','stroke-width':2}); svg.appendChild(p);
+    const mid=(start+end)/2, tx=cx+(r+22)*Math.cos(mid), ty=cy+(r+22)*Math.sin(mid); const t=el('text',{x:tx,y:ty,'font-size':'12',fill:'#334155','text-anchor':tx>cx?'start':'end'}); t.textContent=item.val+'%'; svg.appendChild(t);
+    start=end;
+  });
+  const rank=document.getElementById('rankList'); rank.innerHTML='';
+  list.forEach((item,i)=>{ const li=document.createElement('li'); li.innerHTML=`<span><b style="color:${colors[item.name]}">${i+1}.</b> ${item.name}</span><strong style="color:${colors[item.name]}">${item.val}%</strong>`; rank.appendChild(li); });
+}
+
+function init(){
+  drawOverall(); drawVolume();
+  document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); });
+  const host=document.getElementById('ageButtons');
+  data.forEach((d,i)=>{ const b=document.createElement('button'); b.className='age-btn'+(i===0?' active':''); b.textContent=d.ageGroup; b.onclick=()=>{ document.querySelectorAll('.age-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); drawPie(d.ageGroup); }; host.appendChild(b); });
+  drawPie(data[0].ageGroup);
+}
+init();
+</script>
 </body>
 </html>
