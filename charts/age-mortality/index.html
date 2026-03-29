@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>不同年龄阶段主要死亡原因及比例分析</title>
+  <style>
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#f8fafc;color:#1f2937}
+    .wrap{max-width:1200px;margin:24px auto;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);overflow:hidden}
+    .head{background:#1e293b;color:#fff;padding:24px}
+    .head h1{margin:0 0 8px;font-size:28px}
+    .head p{margin:0;color:#cbd5e1}
+    .tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+    .tab{flex:1;min-width:220px;border:0;background:transparent;padding:14px;cursor:pointer;color:#475569;font-weight:600}
+    .tab.active{color:#2563eb;background:#eff6ff;border-bottom:3px solid #2563eb}
+    .panel{display:none;padding:20px}.panel.active{display:block}
+    .desc{margin:0 0 14px;color:#475569}
+    .chart{width:100%;height:520px}
+    .chart-sm{width:100%;height:420px}
+    .detail{display:grid;grid-template-columns:240px 1fr;gap:16px}
+    .age-btn{width:100%;text-align:left;border:1px solid #dbe3ee;background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+    .age-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+    .card{border:1px solid #e2e8f0;border-radius:12px;padding:12px}
+    .rank li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0}
+    @media (max-width: 900px){.detail{grid-template-columns:1fr}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1>❤️ 不同年龄阶段主要死亡原因及比例分析</h1>
+      <p>使用外部 CDN 动态渲染图表（ECharts）。</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="overall">死因结构演变（堆叠柱状图）</button>
+      <button class="tab" data-tab="volume">各年龄段死亡人数与概率（双轴图）</button>
+      <button class="tab" data-tab="details">各年龄段深度剖析（饼图及排行）</button>
+    </div>
+
+    <section id="overall" class="panel active">
+      <p class="desc">随着年龄增长，主要死因从先天/感染/意外逐步转向恶性肿瘤和心血管疾病。</p>
+      <div id="overallChart" class="chart"></div>
+    </section>
+
+    <section id="volume" class="panel">
+      <p class="desc">柱状图表示各年龄段每年死亡人数（百万），折线表示其占总死亡数比例（%）。</p>
+      <div id="volumeChart" class="chart-sm"></div>
+    </section>
+
+    <section id="details" class="panel">
+      <div class="detail">
+        <div>
+          <h3 style="margin-top:0">选择年龄段</h3>
+          <div id="ageButtons"></div>
+        </div>
+        <div class="card">
+          <h3 id="detailTitle" style="margin-top:0"></h3>
+          <div id="pieChart" class="chart-sm"></div>
+          <ul id="rankList" class="rank"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+const data = [
+  { ageGroup:'0-14岁', deaths:6.2, deathRatio:10.7, '新生儿及先天疾病':50, '感染及寄生虫病':20, '意外伤害与暴力':10, '呼吸系统疾病':8, '恶性肿瘤(癌症)':5, '心血管疾病':2, '神经与精神疾病':0, '其他死因':5 },
+  { ageGroup:'15-29岁', deaths:2.5, deathRatio:4.3, '意外伤害与暴力':50, '神经与精神疾病':15, '其他死因':13, '恶性肿瘤(癌症)':10, '心血管疾病':5, '感染及寄生虫病':5, '呼吸系统疾病':2, '新生儿及先天疾病':0 },
+  { ageGroup:'30-49岁', deaths:5.8, deathRatio:10.0, '恶性肿瘤(癌症)':30, '意外伤害与暴力':20, '心血管疾病':20, '其他死因':10, '感染及寄生虫病':10, '呼吸系统疾病':5, '神经与精神疾病':5, '新生儿及先天疾病':0 },
+  { ageGroup:'50-69岁', deaths:15.5, deathRatio:26.8, '恶性肿瘤(癌症)':40, '心血管疾病':35, '呼吸系统疾病':10, '其他死因':5, '意外伤害与暴力':5, '感染及寄生虫病':3, '神经与精神疾病':2, '新生儿及先天疾病':0 },
+  { ageGroup:'70岁以上', deaths:27.8, deathRatio:48.2, '心血管疾病':45, '恶性肿瘤(癌症)':20, '呼吸系统疾病':15, '神经与精神疾病':10, '感染及寄生虫病':5, '其他死因':3, '意外伤害与暴力':2, '新生儿及先天疾病':0 }
+];
+const colors = {
+  '新生儿及先天疾病':'#f472b6','感染及寄生虫病':'#34d399','意外伤害与暴力':'#fb923c','恶性肿瘤(癌症)':'#ef4444',
+  '心血管疾病':'#3b82f6','呼吸系统疾病':'#06b6d4','神经与精神疾病':'#a855f7','其他死因':'#9ca3af'
+};
+const causes = Object.keys(colors);
+const ageGroups = data.map(d=>d.ageGroup);
+
+const overallChart = echarts.init(document.getElementById('overallChart'));
+const volumeChart = echarts.init(document.getElementById('volumeChart'));
+const pieChart = echarts.init(document.getElementById('pieChart'));
+
+function renderOverall(){
+  overallChart.setOption({
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+    legend:{top:10},
+    grid:{left:50,right:20,top:50,bottom:40},
+    xAxis:{type:'category',data:ageGroups},
+    yAxis:{type:'value',name:'占比(%)',max:100},
+    series: causes.map(c=>({name:c,type:'bar',stack:'total',itemStyle:{color:colors[c]},data:data.map(d=>d[c]||0)}))
+  });
+}
+
+function renderVolume(){
+  volumeChart.setOption({
+    tooltip:{trigger:'axis'},
+    legend:{top:10,data:['每年死亡人数 (百万)','占总死亡数比例']},
+    grid:{left:50,right:60,top:50,bottom:40},
+    xAxis:{type:'category',data:ageGroups},
+    yAxis:[
+      {type:'value',name:'百万',axisLabel:{formatter:'{value}M'}},
+      {type:'value',name:'占比',axisLabel:{formatter:'{value}%'}}
+    ],
+    series:[
+      {name:'每年死亡人数 (百万)',type:'bar',data:data.map(d=>d.deaths),itemStyle:{color:'#818cf8'}},
+      {name:'占总死亡数比例',type:'line',yAxisIndex:1,data:data.map(d=>d.deathRatio),smooth:true,itemStyle:{color:'#e11d48'}}
+    ]
+  });
+}
+
+function renderDetail(ageGroup){
+  const row = data.find(d=>d.ageGroup===ageGroup);
+  const pieData = causes.map(c=>({name:c,value:row[c]||0})).filter(x=>x.value>0).sort((a,b)=>b.value-a.value);
+  document.getElementById('detailTitle').textContent = `${ageGroup} 主要死因分布`;
+  pieChart.setOption({
+    tooltip:{trigger:'item',formatter:'{b}: {c}% ({d}%)'},
+    series:[{type:'pie',radius:['35%','68%'],center:['50%','50%'],data:pieData,itemStyle:{color:(p)=>colors[p.name]}}]
+  });
+  const ul=document.getElementById('rankList'); ul.innerHTML='';
+  pieData.forEach((x,i)=>{ const li=document.createElement('li'); li.innerHTML=`<span><b style="color:${colors[x.name]}">${i+1}.</b> ${x.name}</span><strong style="color:${colors[x.name]}">${x.value}%</strong>`; ul.appendChild(li); });
+}
+
+function initAgeButtons(){
+  const host=document.getElementById('ageButtons');
+  data.forEach((d,i)=>{
+    const btn=document.createElement('button');
+    btn.className='age-btn'+(i===0?' active':'');
+    btn.textContent=d.ageGroup;
+    btn.onclick=()=>{ document.querySelectorAll('.age-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); renderDetail(d.ageGroup); };
+    host.appendChild(btn);
+  });
+}
+
+function initTabs(){
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      setTimeout(()=>{ overallChart.resize(); volumeChart.resize(); pieChart.resize(); },100);
+    };
+  });
+}
+
+window.addEventListener('resize',()=>{ overallChart.resize(); volumeChart.resize(); pieChart.resize(); });
+initTabs();
+initAgeButtons();
+renderOverall();
+renderVolume();
+renderDetail(data[0].ageGroup);
+</script>
+</body>
+</html>
