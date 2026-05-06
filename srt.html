@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT 字幕生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen p-8 flex items-center justify-center">
+    <div id="app" class="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">文本转 SRT 下载器</h1>
+        <p class="text-gray-500 mb-6 text-sm">直接粘贴标准 SRT 文本，或粘贴纯文本（按行自动生成 3 秒默认时间轴）。</p>
+
+        <textarea
+            v-model="inputText"
+            class="w-full h-72 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y mb-4 font-mono text-sm"
+            placeholder="在此粘贴文本..."
+        ></textarea>
+
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+                当前字符数：{{ inputText.length }}
+            </div>
+            <button
+                @click="downloadSrt"
+                :disabled="!inputText.trim()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            >
+                下载 .srt 文件
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const inputText = ref('');
+
+                // 辅助函数：将毫秒转换为 SRT 标准时间格式 (HH:MM:SS,mmm)
+                const formatTime = (ms) => {
+                    const hours = String(Math.floor(ms / 3600000)).padStart(2, '0');
+                    const minutes = String(Math.floor((ms % 3600000) / 60000)).padStart(2, '0');
+                    const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, '0');
+                    const milliseconds = String(ms % 1000).padStart(3, '0');
+                    return `${hours}:${minutes}:${seconds},${milliseconds}`;
+                };
+
+                const downloadSrt = () => {
+                    let finalContent = inputText.value.trim();
+
+                    // 判断逻辑：如果文本中不包含 "-->"，则视为纯文本，进行自动时间轴转换
+                    if (!finalContent.includes('-->')) {
+                        const lines = finalContent.split('\n').filter(line => line.trim() !== '');
+                        let srtResult = '';
+                        let currentTime = 0; // 起始时间 0 毫秒
+                        const durationPerLine = 3000; // 每行默认 3 秒（3000毫秒）
+
+                        lines.forEach((line, index) => {
+                            const startTime = formatTime(currentTime);
+                            currentTime += durationPerLine;
+                            const endTime = formatTime(currentTime);
+
+                            srtResult += `${index + 1}\n`;
+                            srtResult += `${startTime} --> ${endTime}\n`;
+                            srtResult += `${line.trim()}\n\n`;
+                        });
+                        finalContent = srtResult;
+                    }
+
+                    // 将文本转换为 Blob 对象并触发下载
+                    const blob = new Blob([finalContent], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    
+                    // 生成文件名，带上时间戳避免覆盖
+                    const timeStamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                    link.download = `subtitle_${timeStamp}.srt`;
+                    
+                    link.href = url;
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // 清理内存
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                };
+
+                return {
+                    inputText,
+                    downloadSrt
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
