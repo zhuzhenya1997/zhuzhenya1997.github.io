@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>儿童季节性传染病指南</title>
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Hide scrollbars but keep functionality */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    /* Smooth transition for active classes */
+    .transition-all-300 {
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="h-full w-full bg-black text-white font-sans overflow-hidden antialiased">
+
+  <!-- Subtle Global Header -->
+  <div class="fixed top-4 left-4 sm:top-6 sm:left-6 z-50 pointer-events-none flex items-center space-x-2 bg-black/45 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 shadow-lg">
+    <svg class="w-4 h-4 text-rose-500 animate-pulse" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+    </svg>
+    <span class="text-xs sm:text-sm font-semibold text-white tracking-widest whitespace-nowrap">
+      儿童季节性传染病指南 - <span id="current-season-title" class="text-white">春</span>
+    </span>
+  </div>
+
+  <!-- Main Snap Scrolling Container -->
+  <div 
+    id="scroll-container"
+    class="h-full w-full relative overflow-y-auto snap-y snap-mandatory scroll-smooth scrollbar-hide"
+  >
+    <!-- SPRING SECTION -->
+    <section 
+      id="section-spring" 
+      class="min-h-screen lg:h-screen w-full snap-start relative flex flex-col items-center justify-start pt-16 lg:pt-12 pb-24 lg:pb-12 px-3 sm:px-6 lg:overflow-hidden lg:max-h-screen"
+    >
+      <!-- Background Image & Overlay -->
+      <div class="absolute inset-0 z-0 overflow-hidden">
+        <div class="sticky top-0 w-full h-screen">
+          <img 
+            src="https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?q=80&w=2070&auto=format&fit=crop" 
+            alt="春季" 
+            class="w-full h-full object-cover scale-[1.05] opacity-95"
+          />
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-[4px]" />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
+        </div>
+      </div>
+
+      <!-- Content Container -->
+      <div class="relative z-10 w-full h-full max-w-[90rem] flex flex-col lg:min-h-0 mx-auto px-1 sm:px-2 pt-12 sm:pt-4">
+        <!-- Horizontal Grid for Desktop / Vertical Stack for Mobile & Tablet -->
+        <div class="w-full flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 lg:min-h-0 pb-8 lg:pb-4">
+          
+          <!-- Disease Card 1: 流感 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">流行性感冒 (流感)</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-orange-500/90 text-white">
+                  中频
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 流感病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 1-3天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">突发高热，体温可达39-40℃；伴有畏寒、寒战；头痛、肌肉酸痛、极度乏力；食欲减退、点咽、咳嗽。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">飞沫传播（打喷嚏、咳嗽）；接触传播（接触被污染的物品）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">接种流感疫苗是防范最有效的手段；保持室内空气流通；勤洗手，避免去人群密集场所。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 2: 水痘 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">水痘</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-orange-500/90 text-white">
+                  中频
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 水痘-带状疱疹病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 10-21天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">低热或中度发热；皮肤成批出现红色斑丘疹、疱疹；皮疹最终结痂，瘙痒明显；向心性分布（躯干多，四肢少）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">飞沫传播；直接接触传播（接触疱疹液）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-950">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">接种水痘疫苗（需接种两剂次）；患儿需隔离至所有皮疹结痂变干；保持皮肤清洁，避免抓挠防止继发感染。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 3: 手足口病 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">手足口病</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-red-500/90 text-white">
+                  高发
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 肠道病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 3-7天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">发热，婴幼儿常见；口腔黏膜出现疱疹，咽痛拒食；手、足、臀部出现皮疹或疱疹；极少数可引发脑炎、心肌炎等。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">消化道传播（粪-口途径）；呼吸道飞沫传播；密切接触传播。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-955">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">接种EV71型手足口病疫苗（防重症）；勤通风，晒衣被，洗净手，喝开水，吃熟食；患儿建议隔离治疗两周。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMER SECTION -->
+    <section 
+      id="section-summer" 
+      class="min-h-screen lg:h-screen w-full snap-start relative flex flex-col items-center justify-start pt-16 lg:pt-12 pb-24 lg:pb-12 px-3 sm:px-6 lg:overflow-hidden lg:max-h-screen"
+    >
+      <!-- Background Image & Overlay -->
+      <div class="absolute inset-0 z-0 overflow-hidden">
+        <div class="sticky top-0 w-full h-screen">
+          <img 
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" 
+            alt="夏季" 
+            class="w-full h-full object-cover scale-[1.05] opacity-95"
+          />
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-[4px]" />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
+        </div>
+      </div>
+
+      <!-- Content Container -->
+      <div class="relative z-10 w-full h-full max-w-[90rem] flex flex-col lg:min-h-0 mx-auto px-1 sm:px-2 pt-12 sm:pt-4">
+        <!-- Horizontal Grid for Desktop / Vertical Stack for Mobile & Tablet -->
+        <div class="w-full flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 lg:min-h-0 pb-8 lg:pb-4">
+          
+          <!-- Disease Card 1: 疱疹性咽峡炎 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">疱疹性咽峡炎</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-orange-500/90 text-white">
+                  中频
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 柯萨奇A型病毒为主
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 3-5天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">急骤发热，甚至高热惊厥；咽痛剧烈，吞咽困难；流涎、厌食、呕吐；软腭、悬雍垂等处可见红晕及水疱。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">粪-口途径传播；呼吸道飞沫传播；密切接触传播。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">夏季注意饮食和个人卫生；高温时期避免过度疲劳；多喝温凉水，给清淡流质饮食减轻咽痛。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 2: 细菌性痢疾 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">细菌性痢疾</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-red-500/90 text-white">
+                  高发
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 痢疾杆菌
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 1-3天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">畏寒、发热；腹痛、频繁腹泻（多为黏液脓血便）；里急后重（想拉拉不出或拉不尽）；部分严重可致中毒性痢疾。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">粪-口途径传播（主要通过被污染的食物 and 水）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">不吃生冷及不洁食物，不喝生水；饭前便后彻底洗手；生熟砧板分开，做好防蝇灭蝇工作。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 3: 流行性乙型脑炎 (乙脑) -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">流行性乙型脑炎 (乙脑)</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-red-500/90 text-white">
+                  高发
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 乙型脑炎病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 4-21天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">起病急，高热（常达40℃以上）；头痛、呕吐；意识障碍、抽搐；可能遗留神经系统后遗症。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">蚊虫叮咬传播（主要为三带喙库蚊）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">按规定程序及时接种乙脑疫苗；夏季全面做好防蚊灭蚊工作；保持居住环境卫生，及时清理积水。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTUMN SECTION -->
+    <section 
+      id="section-autumn" 
+      class="min-h-screen lg:h-screen w-full snap-start relative flex flex-col items-center justify-start pt-16 lg:pt-12 pb-24 lg:pb-12 px-3 sm:px-6 lg:overflow-hidden lg:max-h-screen"
+    >
+      <!-- Background Image & Overlay -->
+      <div class="absolute inset-0 z-0 overflow-hidden">
+        <div class="sticky top-0 w-full h-screen">
+          <img 
+            src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=2070&auto=format&fit=crop" 
+            alt="秋季" 
+            class="w-full h-full object-cover scale-[1.05] opacity-95"
+          />
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-[4px]" />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
+        </div>
+      </div>
+
+      <!-- Content Container -->
+      <div class="relative z-10 w-full h-full max-w-[90rem] flex flex-col lg:min-h-0 mx-auto px-1 sm:px-2 pt-12 sm:pt-4">
+        <!-- Horizontal Grid for Desktop / Vertical Stack for Mobile & Tablet -->
+        <div class="w-full flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 lg:min-h-0 pb-8 lg:pb-4 justify-center">
+          
+          <!-- Disease Card 1: 秋季腹泻 -->
+          <div class="flex-1 max-w-2xl bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">秋季腹泻 (轮状病毒肠炎)</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-orange-500/90 text-white">
+                  中频
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 轮状病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 1-3天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">急骤起病，早期可见发热呕吐；之后出现蛋花汤样或稀水样腹泻，每日可达数十次；易导致脱水。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">粪-口途径传播，或通过被病毒污染的手和唾液。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">适龄儿童尽早接种轮状病毒减毒活疫苗；饭前便后彻底洗手；及时对辅食餐具进行高温消毒。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 2: 诺如病毒 -->
+          <div class="flex-1 max-w-2xl bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">诺如病毒感染</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-orange-500/90 text-white">
+                  中频
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 诺如病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 12-48小时
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">发病突然，儿童主要以吐为主，辅以轻微发热与腹痛。该病属于自限性疾病，一般2-3天即可自行好转。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">接触传播（含有病毒的飞沫，或由于被污染的水源/不洁海鲜食品）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">海鲜及肉类等食物务必做到彻底煮熟；使用含氯消毒液妥善处理患儿呕吐物；勤用肥皂流水洗手（免洗液无效）。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- WINTER SECTION -->
+    <section 
+      id="section-winter" 
+      class="min-h-screen lg:h-screen w-full snap-start relative flex flex-col items-center justify-start pt-16 lg:pt-12 pb-24 lg:pb-12 px-3 sm:px-6 lg:overflow-hidden lg:max-h-screen"
+    >
+      <!-- Background Image & Overlay -->
+      <div class="absolute inset-0 z-0 overflow-hidden">
+        <div class="sticky top-0 w-full h-screen">
+          <img 
+            src="https://images.unsplash.com/photo-1483664852095-d6cc6870702d?q=80&w=2070&auto=format&fit=crop" 
+            alt="冬季" 
+            class="w-full h-full object-cover scale-[1.05] opacity-95"
+          />
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-[4px]" />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
+        </div>
+      </div>
+
+      <!-- Content Container -->
+      <div class="relative z-10 w-full h-full max-w-[90rem] flex flex-col lg:min-h-0 mx-auto px-1 sm:px-2 pt-12 sm:pt-4">
+        <!-- Horizontal Grid for Desktop / Vertical Stack for Mobile & Tablet -->
+        <div class="w-full flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 lg:min-h-0 pb-8 lg:pb-4">
+          
+          <!-- Disease Card 1: 流行性感冒 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">流行性感冒</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-orange-500/90 text-white">
+                  中频
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 流感病毒 (多为甲流、乙流)
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 1-3天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">高热、头痛、肌肉酸痛、乏力等全身症状明显；咽痛、干咳；儿童易并发肺炎、中耳炎等。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">呼吸道飞沫传播；接触被病毒污染的物品。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">每年入冬前尽早接种流感疫苗；冬季定期开窗通风（每日2-3次，每次20-30分钟）；保持良好手卫生。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 2: 呼吸道合胞病毒 (RSV) -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">呼吸道合胞病毒 (RSV)</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-red-500/90 text-white">
+                  高发
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 呼吸道合胞病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 4-5天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">主要表现为流涕、咳嗽、打喷嚏、轻微发热；多数婴幼儿可发展为毛细支气管炎或肺炎；剧烈咳嗽，伴有喘息、呼吸急促。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">飞沫传播；接触传播（接触污染表面后摸眼鼻口）。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-950">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">1岁以下婴儿及早产儿需尤其加强防护；提倡母乳喂养增强免疫力；感冒患者应减少与婴幼儿密切接触。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Card 3: 流行性腮腺炎 -->
+          <div class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden flex flex-col hover:bg-white/50 transition duration-300">
+            <div class="p-4 lg:p-6 flex flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto scrollbar-hide">
+              <div class="flex justify-between items-center mb-3 lg:mb-4 shrink-0">
+                <h3 class="text-base lg:text-lg font-bold text-neutral-900 tracking-tight">流行性腮腺炎</h3>
+                <span class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold shadow-sm whitespace-nowrap bg-red-500/90 text-white">
+                  高发
+                </span>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3 shrink-0">
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  病原: 腮腺炎病毒
+                </span>
+                <span class="text-[10px] sm:text-xs bg-white/60 text-neutral-800 px-2 py-1 rounded-md shadow-sm border border-white/30 font-semibold flex items-center">
+                  潜伏期: 14-25天
+                </span>
+              </div>
+              <div class="flex-1 flex flex-col gap-2 lg:gap-3 text-neutral-900 text-xs sm:text-sm leading-relaxed">
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>
+                    <span class="font-bold text-rose-900">典型症状</span>
+                  </div>
+                  <span class="font-medium opacity-90">发热、畏寒、头痛；主要表现为耳下腮腺肿大、胀痛；张口或咀嚼酸性食物时疼痛加剧；可并发脑膜炎等。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
+                    <span class="font-bold text-amber-900">传播途径</span>
+                  </div>
+                  <span class="font-medium opacity-90">直接接触（飞沫、唾液）；或通过被唾液污染的衣物或生活餐玩物传播。</span>
+                </div>
+                <div class="bg-white/50 p-3 lg:p-4 rounded-2xl border border-white/30 shadow-sm flex flex-col items-start text-left lg:flex-1">
+                  <div class="flex items-center mb-1 shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                    <span class="font-bold text-emerald-900">预防建议</span>
+                  </div>
+                  <span class="font-medium opacity-90">接种麻腮风（MMR）联合疫苗；确诊后隔离治疗至肿消；饮食清淡流质，避免酸辣食物。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Cyclic Progress Bar -->
+  <div class="fixed bottom-0 lg:bottom-auto lg:top-0 left-0 lg:left-auto lg:right-0 w-full lg:w-auto h-auto lg:h-full z-50 p-4 sm:p-6 md:p-8 flex items-center justify-center lg:justify-end pointer-events-none">
+    <div id="nav-container" class="bg-black/30 backdrop-blur-xl border border-white/20 rounded-full px-2 lg:px-2 py-1.5 lg:py-2 flex flex-row lg:flex-col items-center space-x-2 lg:space-x-0 lg:space-y-4 shadow-2xl pointer-events-auto">
+      
+      <!-- NAV SPRING -->
+      <button 
+        onclick="scrollToSeason('spring')" 
+        id="nav-spring"
+        class="relative flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full transition-all duration-500 ease-out focus:outline-none bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)] scale-105"
+        title="春季 (Spring)"
+      >
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+      </button>
+
+      <div class="nav-divider w-3 sm:w-6 lg:w-[2px] h-[2px] lg:h-6 bg-white/20 rounded-full flex-shrink-0"></div>
+
+      <!-- NAV SUMMER -->
+      <button 
+        onclick="scrollToSeason('summer')" 
+        id="nav-summer"
+        class="relative flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full transition-all duration-500 ease-out focus:outline-none bg-transparent text-white/50 hover:bg-white/10 hover:text-white"
+        title="夏季 (Summer)"
+      >
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+      </button>
+
+      <div class="nav-divider w-3 sm:w-6 lg:w-[2px] h-[2px] lg:h-6 bg-white/20 rounded-full flex-shrink-0"></div>
+
+      <!-- NAV AUTUMN -->
+      <button 
+        onclick="scrollToSeason('autumn')" 
+        id="nav-autumn"
+        class="relative flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full transition-all duration-500 ease-out focus:outline-none bg-transparent text-white/50 hover:bg-white/10 hover:text-white"
+        title="秋季 (Autumn)"
+      >
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m-5 9l5-5 5 5" />
+        </svg>
+      </button>
+
+      <div class="nav-divider w-3 sm:w-6 lg:w-[2px] h-[2px] lg:h-6 bg-white/20 rounded-full flex-shrink-0"></div>
+
+      <!-- NAV WINTER -->
+      <button 
+        onclick="scrollToSeason('winter')" 
+        id="nav-winter"
+        class="relative flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full transition-all duration-500 ease-out focus:outline-none bg-transparent text-white/50 hover:bg-white/10 hover:text-white"
+        title="冬季 (Winter)"
+      >
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 shadow-inner" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3m15.364-6.364L5.636 18.364m12.728 0L5.636 5.636" />
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    const SEASONS = ['spring', 'summer', 'autumn', 'winter'];
+    const SEASON_LABELS = {
+      spring: '春市 (Spring)',
+      summer: '夏季 (Summer)',
+      autumn: '秋季 (Autumn)',
+      winter: '冬季 (Winter)'
+    };
+    const SEASON_LABEL_MINI = {
+      spring: '春',
+      summer: '夏',
+      autumn: '秋',
+      winter: '冬'
+    };
+
+    const scrollContainer = document.getElementById('scroll-container');
+    const titleSpan = document.getElementById('current-season-title');
+
+    function updateActiveNavigation(activeSeason) {
+      SEASONS.forEach(s => {
+        const btn = document.getElementById(`nav-${s}`);
+        if(s === activeSeason) {
+          btn.className = "relative flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full transition-all duration-500 ease-out focus:outline-none bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)] scale-105";
+          btn.blur();
+        } else {
+          btn.className = "relative flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full transition-all duration-500 ease-out focus:outline-none bg-transparent text-white/50 hover:bg-white/10 hover:text-white";
+        }
+      });
+      titleSpan.textContent = SEASON_LABEL_MINI[activeSeason];
+    }
+
+    let activeSeason = 'spring';
+
+    scrollContainer.addEventListener('scroll', () => {
+      const containerTop = scrollContainer.scrollTop;
+      const height = window.innerHeight;
+      const checkPoint = containerTop + height / 3;
+
+      let currentSeason = activeSeason;
+
+      SEASONS.forEach(season => {
+        const element = document.getElementById(`section-${season}`);
+        if (element) {
+          const elementTop = element.offsetTop;
+          const elementBottom = elementTop + element.offsetHeight;
+          if (checkPoint >= elementTop && checkPoint <= elementBottom) {
+            currentSeason = season;
+          }
+        }
+      });
+
+      if (currentSeason !== activeSeason) {
+        activeSeason = currentSeason;
+        updateActiveNavigation(activeSeason);
+      }
+    });
+
+    function scrollToSeason(season) {
+      const element = document.getElementById(`section-${season}`);
+      if (element) {
+        scrollContainer.scrollTo({
+          top: element.offsetTop,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // Recalculate layout offset heights on window resize
+    window.addEventListener('resize', () => {
+      scrollToSeason(activeSeason);
+    });
+
+  </script>
+</body>
+</html>
